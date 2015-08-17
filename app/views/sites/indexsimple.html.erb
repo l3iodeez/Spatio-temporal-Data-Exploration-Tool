@@ -1,44 +1,35 @@
-<p id="notice"><%= notice %></p>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
 
+body { font: 12px Arial;}
 
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
 
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
 
+</style>
+<body>
 
-<h1>Listing Sites</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <div id="map_canvas" style="height: 600px; width:1200px;"></div>
-  </tbody>
-</table>
-
-
-<br>
-
-
-<script type="text/javascript">
-handler = Gmaps.build('Google');
-handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
- markers = handler.addMarkers(<%=raw @hash.to_json %>);
-  handler.bounds.extendWith(markers);
-  handler.fitMapToBounds();
- 
-});
-</script>
+<!-- load the d3.js library -->    
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
 <script>
 
 // Set the dimensions of the canvas / graph
 var margin = {top: 30, right: 20, bottom: 30, left: 50},
-    width = 1200 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
 
 // Parse the date / time
 var parseDate = d3.time.format("%Y-%m-%d").parse;
@@ -69,7 +60,7 @@ var svg = d3.select("body")
               "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
-d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
+d3.csv('/measurements/2.csv', function(error, data) {
     data.forEach(function(d) {
         d.measure_date = parseDate(d.measure_date);
         d.water_level = +d.water_level;
@@ -77,7 +68,6 @@ d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
 
     // Scale the range of the data
     x.domain(d3.extent(data, function(d) { return d.measure_date; }));
-    //x.domain([parseDate("1900-01-01"),parseDate("2016-01-01"])
     y.domain([0, d3.max(data, function(d) { return d.water_level; })]);
 
     // Add the valueline path.
@@ -99,6 +89,4 @@ d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
 });
 
 </script>
-
-<%= link_to 'New Site', new_site_path %>
-
+</body>

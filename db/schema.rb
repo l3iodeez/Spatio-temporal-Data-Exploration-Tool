@@ -11,26 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150807153910) do
+ActiveRecord::Schema.define(version: 20150814175831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "measurements", force: :cascade do |t|
+    t.integer "site_id"
     t.string  "site_name"
     t.date    "measure_date"
     t.decimal "water_level"
     t.string  "units"
-    t.string  "type"
+    t.string  "measure_type"
+    t.string  "data_provider"
   end
 
   create_table "sites", force: :cascade do |t|
     t.string   "site_name"
-    t.string   "source"
-    t.decimal  "lat"
-    t.decimal  "long"
+    t.string   "well_reference"
+    t.float    "latitude"
+    t.float    "longitude"
     t.datetime "start"
     t.datetime "end"
+    t.integer  "measure_count"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "address"
   end
 
 end

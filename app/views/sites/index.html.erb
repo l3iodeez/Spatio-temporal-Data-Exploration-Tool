@@ -5,7 +5,7 @@
 
 
 <h1>Listing Sites</h1>
-
+<% if true%>
 <table>
   <thead>
     <tr>
@@ -17,7 +17,7 @@
     <div id="map_canvas" style="height: 800px; width:1200px;"></div>
   </tbody>
 </table>
-
+<% end %>
 <br>
 
 
@@ -26,8 +26,12 @@ handler = Gmaps.build('Google');
 handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
  markers = handler.addMarkers(<%=raw @hash.to_json %>);
   handler.bounds.extendWith(markers);
+
   handler.fitMapToBounds();
  
 });
 </script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+
 <%= link_to 'New Site', new_site_path %>
