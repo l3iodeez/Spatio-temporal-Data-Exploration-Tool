@@ -15,7 +15,7 @@ gem 'hammerjs_rails'
 gem 'geocoder'
 gem 'responders'
 gem 'jquery-ui-rails'
-gem 'byebug'
+gem 'd3-rails'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
