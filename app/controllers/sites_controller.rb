@@ -40,7 +40,7 @@ end
   # GET /sites/1
   # GET /sites/1.json
   def show
-     @sites = Site.near("#{@site.address} #{@site.city}, #{@site.state}",10) #Site.where("state = 'NJ' and measure_count > 1000")
+     @sites = Site.near("#{@site.address} #{@site.city}, #{@site.state}",100) #Site.where("state = 'NJ' and measure_count > 1000")
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
       if site.measure_count
         site_link = view_context.link_to site.id.to_s, site_path(site.id)
