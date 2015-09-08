@@ -12,7 +12,14 @@ class MeasurementsController < ApplicationController
   end
 
 def show
-    @measurements = Measurement.where("site_id = " + params[:site_id])
+	@current_site = Site.where("id = " + params[:site_id])
+	@graph_sites = []
+ 
+	@current_site[0].nearbys(50).each { |x| @graph_sites.push(x.id) }
+	@measurements = Measurement.where(:site_id => @graph_sites)
+
+
+    #@measurements = Measurement.where("site_id = " + params[:site_id])
     respond_with(@measurements.as_csv)
 end
 

@@ -16,4 +16,6 @@
 //= require underscore
 //= require gmaps/google
 //= require d3
+//= require line-graph
+//= require sample-data
 //= require_tree .
