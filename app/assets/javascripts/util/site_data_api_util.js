@@ -1,12 +1,11 @@
 (function(root) {
   'use strict';
-  var NotesAPIUtil = root.NotesAPIUtil = {
+  var SitesAPIUtil = root.SitesAPIUtil = {
     fetchSiteMetadata: function (callback) {
       $.ajax({
         url: '/api/sites',
         method: 'GET',
-        dataType: 'json',
-        contentType: 'application/json',
+
         success: function (data) {
           ApiActions.receiveSiteMetadata(data);
           if (typeof callback === "function") {

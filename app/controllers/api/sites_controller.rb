@@ -11,7 +11,7 @@ class Api::SitesController < ApplicationController
     #     marker.infowindow("<h4><u>#{site_link}</u></h4> ")
     #   end
     # end
-    render @sites
+    render :api_index
   end
 
 
