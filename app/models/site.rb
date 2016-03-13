@@ -8,7 +8,7 @@ reverse_geocoded_by :latitude, :longitude do |obj,results|
     obj.state = geo.state_code
 
 	end
-end	
+end
 
 def self.as_csv
   CSV.generate do |csv|
@@ -19,6 +19,21 @@ def self.as_csv
   end
 end
 
+def self.geocode_all
+    @sites = Site.all
+    count = 0
+    @sites.each do |site|
+      if not site.address
+      site.update({:id => site.id})
+      count += 1
+        if count > 2
+          sleep(2)
+          count = 0
+        end
+      end
+    end
+   p "#{count} sites have been successfully geocoded."
+end
 
 after_validation :reverse_geocode  # auto-fetch address
 end

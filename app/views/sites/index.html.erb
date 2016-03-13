@@ -22,13 +22,13 @@
 
 
 <script type="text/javascript">
-handler = Gmaps.build('Google');
-handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
- markers = handler.addMarkers(<%=raw @hash.to_json %>);
+  handler = Gmaps.build('Google');
+  handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
+  markers = handler.addMarkers(<%=raw @hash.to_json %>);
   handler.bounds.extendWith(markers);
 
   handler.fitMapToBounds();
- 
+
 });
 </script>
 <script src="http://d3js.org/d3.v3.min.js"></script>

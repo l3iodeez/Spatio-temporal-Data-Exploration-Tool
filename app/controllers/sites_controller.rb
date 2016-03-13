@@ -4,8 +4,7 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
-
- @sites = Site.all
+    @sites = Site.all
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
         site_link = view_context.link_to site.id.to_s, site_path(site.id)
       if site.measure_count
@@ -14,29 +13,13 @@ class SitesController < ApplicationController
         marker.infowindow("<h4><u>#{site_link}</u></h4> ")
       end
     end
+    fail
 
   end
 
 
 
-def geocode_all
-      @sites = Site.all
-        count = 0
-    @sites.each do |site|
-      if not site.address
-      site.update({:id => site.id})
-      count += 1
-        if count > 2 
-          sleep(2)
-          count = 0
-        end
-      end
-    end
-    respond_to do |format|
-      format.html { redirect_to sites_url, notice: 'Sites have been successfully geocoded.' }
-      format.json { head :no_content }
-    end
-end
+
   # GET /sites/1
   # GET /sites/1.json
   def show
