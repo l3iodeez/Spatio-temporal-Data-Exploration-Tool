@@ -26,14 +26,13 @@ def self.geocode_all
       if not site.address
       site.update({:id => site.id})
       count += 1
-        if count > 2
+        if count % 3 == 0
           sleep(2)
-          count = 0
         end
       end
     end
    p "#{count} sites have been successfully geocoded."
 end
 
-after_validation :reverse_geocode  # auto-fetch address
+# after_validation :reverse_geocode  # auto-fetch address
 end

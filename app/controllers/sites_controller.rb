@@ -4,17 +4,15 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
-    @sites = Site.all
+    @sites = Site.where("measure_count > 0")
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
         site_link = view_context.link_to site.id.to_s, site_path(site.id)
-      if site.measure_count
+      if site.measure_count && site.address
         marker.lat site.latitude
         marker.lng site.longitude
         marker.infowindow("<h4><u>#{site_link}</u></h4> ")
       end
     end
-    fail
-
   end
 
 
@@ -23,7 +21,8 @@ class SitesController < ApplicationController
   # GET /sites/1
   # GET /sites/1.json
   def show
-     @sites = Site.near("#{@site.address} #{@site.city}, #{@site.state}",100) #Site.where("state = 'NJ' and measure_count > 1000")
+    #  @sites = Site.where("state = 'NJ' and measure_count > 10000") #Site.near("#{@site.address} #{@site.city}, #{@site.state}",100)
+    @sites = Site.first
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
         if site.measure_count
           site_link = view_context.link_to site.id.to_s, site_path(site.id)

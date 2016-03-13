@@ -28,7 +28,7 @@ handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
  markers = handler.addMarkers(<%=raw @hash.to_json %>);
   handler.bounds.extendWith(markers);
   handler.fitMapToBounds();
- 
+
 });
 </script>
 
@@ -58,18 +58,19 @@ var yAxis = d3.svg.axis().scale(y)
 var valueline = d3.svg.line()
     .x(function(d) { return x(d.measure_date); })
     .y(function(d) { return y(d.water_level); });
-    
+
 // Adds the svg canvas
 var svg = d3.select("body")
     .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
     .append("g")
-        .attr("transform", 
+        .attr("transform",
               "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
 d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
+  debugger
     data.forEach(function(d) {
         d.measure_date = parseDate(d.measure_date);
         d.water_level = +d.water_level;
@@ -101,4 +102,3 @@ d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
 </script>
 
 <%= link_to 'New Site', new_site_path %>
-

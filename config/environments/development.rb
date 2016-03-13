@@ -9,6 +9,7 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
   config.web_console.whitelisted_ips = '192.168.1.119'
+  BetterErrors::Middleware.allow_ip! '192.168.1.119'
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
