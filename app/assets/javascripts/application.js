@@ -12,10 +12,15 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require underscore
+//= require react
+//= require react_ujs
+//= require ReactRouter.min
+//= require eventemitter
+//= require flux
 //= require gmaps/google
 //= require d3
 //= require line-graph
 //= require sample-data
+//= require_tree ./components
 //= require_tree .

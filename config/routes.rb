@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
-  resources :sites
+  # resources :sites
   get 'measurements/:site_id/' => 'measurements#show'
-
-
+  get 'react/' => 'static_pages#root'
+  namespace :api, defaults: {format: :json} do
+    get 'sites' => 'sites#api_index'
+    get 'search' => 'sites#search'
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

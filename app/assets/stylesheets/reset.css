@@ -1,0 +1,48 @@
+html, body, ul, li, div, button,
+input, textarea, a, p {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+
+  color: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  font: inherit;
+  -webkit-font-smoothing: antialiased;
+
+  background: transparent;
+}
+body {
+  font-family: "Century Gothic",helvetica,arial,sans-serif;
+  font-size: 12px;
+}
+li, ul {
+  list-style: none;
+}
+.group:after{
+  content: "";
+  display: block;
+  clear: both;
+}
+input:focus {
+  outline: 0;
+}
+textarea:focus {
+  outline: 0;
+}
+button:focus {
+  outline: 0;
+}
+button, a {
+  outline: 0;
+  cursor: pointer;
+}
+a {
+  color: #232261;
+  text-decoration: underline
+
+}
+a:hover, a:active a:visited {
+  color: #9E1E62
+}

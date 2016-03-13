@@ -1,0 +1,46 @@
+.app.container {
+  border: 1px solid black;
+}
+.app {
+  position: fixed;
+  top: 20px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+}
+.map {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 50%;
+  right: 50%;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.selector {
+  position: absolute;
+
+  left: 0;
+  top: 50%;
+  bottom: 0;
+  right: 50%;
+  border-right: 1px solid black;
+
+}
+
+.graph {
+  position: absolute;
+  left: 50%;
+  right: 0;
+}
+
+.graph.top {
+  top: 0;
+  bottom: 50%;
+  border-bottom: 1px solid black;
+}
+
+.graph.bottom {
+  top: 50%
+}
