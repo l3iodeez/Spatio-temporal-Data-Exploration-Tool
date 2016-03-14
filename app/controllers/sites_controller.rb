@@ -4,31 +4,17 @@ class SitesController < ApplicationController
   # GET /sites
   # GET /sites.json
   def index
+
     @sites = Site.where("measure_count > 0")
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
-        site_link = view_context.link_to site.id.to_s, site_path(site.id)
+        # site_link = view_context.link_to site.id.to_s, site_path(site.id)
       if site.measure_count && site.address
         marker.lat site.latitude
         marker.lng site.longitude
-        marker.infowindow("<h4><u>#{site_link}</u></h4> ")
+        marker.infowindow("<h4><u>Some html</u></h4> ")
       end
     end
   end
-  def api_index
-    byebug
-    @sites = Site.where("measure_count > 0")
-    @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
-      site_link = view_context.link_to site.id.to_s, site_path(site.id)
-    if site.measure_count && site.address
-      marker.lat site.latitude
-      marker.lng site.longitude
-      marker.infowindow("<h4><u>#{site_link}</u></h4> ")
-    end
-    render_json @sites
-  end
-
-
-
 
   # GET /sites/1
   # GET /sites/1.json
@@ -37,11 +23,9 @@ class SitesController < ApplicationController
     @sites = Site.first
       @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
         if site.measure_count
-          site_link = view_context.link_to site.id.to_s, site_path(site.id)
           marker.lat site.latitude
           marker.lng site.longitude
           #marker.json({ link: site_path(@site.id) })
-          marker.infowindow("<h4><u>#{site_link}</u></h4> ")
         end
       end
   end

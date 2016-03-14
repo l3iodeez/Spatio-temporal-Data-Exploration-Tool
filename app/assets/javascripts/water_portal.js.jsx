@@ -25,8 +25,8 @@ $(document).on('ready', function () {
 
       return(
         <div className="app container group">
-          <div className="map container"></div>
-          <div className="selector container"><SiteSearch /></div>
+          <div className="map container"><SiteSearch /></div>
+          <div className="selector container"></div>
           <div className="graph container top"></div>
           <div className="graph container bottom"></div>
         </div>

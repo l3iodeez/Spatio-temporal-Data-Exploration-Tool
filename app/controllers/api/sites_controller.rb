@@ -3,14 +3,6 @@ class Api::SitesController < ApplicationController
 
   def api_index
     @sites = Site.where("measure_count > 0")
-    # @hash = Gmaps4rails.build_markers(@sites) do |site, marker|
-    #   site_link = view_context.link_to site.id.to_s, site_path(site.id)
-    #   if site.measure_count && site.address
-    #     marker.lat site.latitude
-    #     marker.lng site.longitude
-    #     marker.infowindow("<h4><u>#{site_link}</u></h4> ")
-    #   end
-    # end
     render :api_index
   end
 

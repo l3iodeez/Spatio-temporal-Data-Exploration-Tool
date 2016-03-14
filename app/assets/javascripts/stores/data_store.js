@@ -15,9 +15,13 @@
     },
     storeMetaData: function (sites) {
       _sites = sites;
+      this._sitesChanged();
     },
     siteMetaData: function () {
       return _sites;
+    },
+    _sitesChanged : function () {
+      this.emit(CHANGE_EVENT);
     },
     dispatcherId: AppDispatcher.register(function (payload) {
       if (payload.actionType === SiteConstants.RECEIVE_SITE_METADATA) {

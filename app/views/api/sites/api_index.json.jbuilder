@@ -1,3 +1,14 @@
   json.array!(@sites) do |site|
-    json.partial!('site', site: site)
+    # json.partial!('/api/sites/site', site: site),
+    json.id site.id
+    json.site_name site.site_name
+    json.lng site.longitude
+    json.lat site.latitude
+    json.infowindow "<h4><u>#{site.measure_count}</u></h4> "
+
+    json.address site.address
+    json.city site.city
+    json.state site.state
+    json.zip site.zip
+    json.measure_count site.measure_count
   end
