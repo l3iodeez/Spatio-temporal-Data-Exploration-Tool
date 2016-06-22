@@ -14,7 +14,9 @@
       this.removeListener(CHANGE_EVENT, callback);
     },
     storeMetaData: function (sites) {
-      _sites = sites;
+      if (_sites.length === 0) {
+        _sites = sites;
+      }
       this._sitesChanged();
     },
     siteMetaData: function () {
@@ -24,7 +26,7 @@
       this.emit(CHANGE_EVENT);
     },
     dispatcherId: AppDispatcher.register(function (payload) {
-      if (payload.actionType === SiteConstants.RECEIVE_SITE_METADATA) {
+      if (payload.actionType === SiteConstants.SITE_METADATA_RECEIVED) {
         SiteDataStore.storeMetaData(payload.sites);
       }
     }),
