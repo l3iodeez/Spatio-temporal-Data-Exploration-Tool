@@ -4,35 +4,23 @@ var SiteSearch = React.createClass({
       query: {}
      };
   },
-  componentWillMount: function() {
-    SitesAPIUtil.fetchSiteMetadata();
+  componentDidMount: function() {
+    this.loadMap();
     SiteDataStore.addChangeListener(this.loadMarkers);
+    SitesAPIUtil.fetchSiteMetadata();
+  },
+  loadMap: function () {
+    this.setState({
+      map: new GMaps({
+        div: '#map_canvas',
+        lat: 37.945,
+        lng: -97.64805556,
+        zoom: 3
+      })
+    });
   },
   loadMarkers: function() {
-    // handler = Gmaps.build('Google');
-    // handler.buildMap({ provider: {}, internal: {id: 'map_canvas'}}, function(){
-    //   markers = handler.addMarkers(SiteDataStore.siteMetaData());
-    //   debugger
-    //   handler.bounds.extendWith(markers);
-    //   handler.fitMapToBounds();
-    // }.bind(this));
-    var map;
-    var layer_0;
-      map = new google.maps.Map(document.getElementById('map_canvas'), {
-        center: new google.maps.LatLng(21.113040668158696, -155.63472860153698),
-        zoom: 5,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-      layer_0 = new google.maps.FusionTablesLayer({
-        query: {
-          select: "col3",
-          from: "11Ij2XebnhSeA4Btr4CsNg84oOc8GjiaNK6-iRgYv"
-        },
-        map: map,
-        styleId: 2,
-        templateId: 2
-      });
-
+    this.state.map.addMarkers(SiteDataStore.siteMetaData());
   },
   render: function() {
     return (

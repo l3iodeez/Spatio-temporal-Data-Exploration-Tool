@@ -16,6 +16,13 @@
     storeMetaData: function (sites) {
       if (_sites.length === 0) {
         _sites = sites;
+        _sites.forEach(function (site) {
+          site.iconColor = "000";
+          site.icon = "https://chart.googleapis.com/chart?chst=d_text_outline&chld=" + site.iconColor + "|8|h|000|b|O";
+          site.click = function (e) {
+            alert('you clicked marker ' + site.id);
+          }.bind(this);
+        });
       }
       this._sitesChanged();
     },

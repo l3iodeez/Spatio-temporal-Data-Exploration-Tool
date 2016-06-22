@@ -4,7 +4,15 @@
     json.site_name site.site_name
     json.lng site.longitude
     json.lat site.latitude
-    json.infowindow "<h4><u>#{site.measure_count}</u></h4> "
+    # json.infowindow <<-HTML
+    #   <h4>
+    #     <ul>
+    #       <li>Site id #{site.id}</li>
+    #       <li>Number of measurements #{site.measure_count}</li>
+    #       <li><a href="#">Select</a></li>
+    #     </ul>
+    #   </h4>
+    # HTML
 
     json.address site.address
     json.city site.city

@@ -11,7 +11,6 @@ gem 'pry-nav'
 gem 'nokogiri'
 gem 'puma'
 
-gem 'gmaps4rails'
 gem 'underscore-rails'
 gem 'hammerjs_rails'
 gem 'geocoder'

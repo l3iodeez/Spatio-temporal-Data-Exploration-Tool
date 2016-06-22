@@ -18,9 +18,9 @@
 //= require ReactRouter.min
 //= require markerclusterer
 //= require d3
+//= require gmaps
 //= require eventemitter
 //= require flux
-//= require gmaps/google
 //= require d3
 //= require line-graph
 //= require sample-data
