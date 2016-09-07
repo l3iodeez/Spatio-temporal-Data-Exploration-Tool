@@ -1,0 +1,3 @@
+var SiteConstants = {
+  SITE_METADATA_RECEIVED: "SITE_METADATA_RECEIVED"
+};

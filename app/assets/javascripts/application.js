@@ -25,4 +25,5 @@
 //= require line-graph
 //= require sample-data
 //= require_tree ./components
+//= require_tree ./util
 //= require_tree .

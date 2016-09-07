@@ -18,14 +18,30 @@
         _sites = sites;
         _sites.forEach(function (site) {
           site.iconColor = "000";
-          site.icon = "https://chart.googleapis.com/chart?chst=d_text_outline&chld=" + site.iconColor + "|8|h|000|b|O";
+          site.icon = 'https://chart.googleapis.com/chart?chst=d_text_outline&chld=' + site.iconColor + '|8|h|000|b|O';
           site.click = function (e) {
-            alert('you clicked marker ' + site.id);
+            StateStore.toggleSite(site.id)
           }.bind(this);
         });
       }
       this._sitesChanged();
     },
+
+    updateColors: function () {
+      debugger
+      if (_sites.length >0 ) {
+        _sites.forEach(function (site) {
+          if (StateStore.isSelected(site.id)) {
+            site.iconColor = "F00";
+          } else {
+            site.iconColor = "000";
+          }
+          site.icon = 'https://chart.googleapis.com/chart?chst=d_text_outline&chld=' + site.iconColor + '|8|h|000|b|O';
+        }.bind(this));
+      }
+      this._sitesChanged();
+    },
+
     siteMetaData: function () {
       return _sites;
     },

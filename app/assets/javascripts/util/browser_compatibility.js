@@ -1,6 +1,18 @@
 (function(root) {
   'use strict';
-  if (typeof Array.find === "undefined") {
+  if (!Array.prototype.includes) {
+    Array.prototype.includes = function (element) {
+      var array = this.slice(0);
+      for (var i = 0; i < array.length; i++) {
+        if ( element === array[i]) {
+          return true;
+        }
+      }
+      return false;
+    };
+  }
+  
+  if (!Array.prototype.find) {
     Array.prototype.find = function (callback) {
       var array = this.slice(0);
       for (var i = 0; i < array.length; i++) {
@@ -44,6 +56,16 @@
         return -1;
     };
   }
+  
+  var WaterData = window.WaterData = window.WaterData || {};
+  
+  WaterData.inherits = function (ChildClass,ParentClass) {
+    var Surrogate = function () {};
+    Surrogate.prototype = ParentClass.prototype;
+    ChildClass.prototype = new Surrogate ();
+    ChildClass.prototype.constructor = ChildClass;
+  };
+
 
 
 }(this));
