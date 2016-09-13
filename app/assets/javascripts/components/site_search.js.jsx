@@ -27,10 +27,11 @@ var SiteSearch = React.createClass({
     this.state.map.addMarkers(SiteDataStore.siteMetaData());
     this.forceUpdate();
   },
-  
+
   updateMarkers: function () {
-    
+
   },
+
   updateColors: function () {
     SiteDataStore.updateColors();
     this.loadMarkers();
@@ -38,7 +39,7 @@ var SiteSearch = React.createClass({
 
   render: function () {
     return (
-      <div id="map_canvas" style={{"height": "100%", "width": "100%"}}></div> 
+      <div id="map_canvas" style={{ height: '100%', width: '100%' }}></div>
     );
   },
 
