@@ -20,9 +20,9 @@
 
     toggleSite: function (siteId) {
       if (_selectedSites.isSelected(siteId)) {
-        this.selectSite(siteId);
-      } else {
         this.removeSite(siteId);
+      } else {
+        this.selectSite(siteId);
       }
     },
 
@@ -41,7 +41,7 @@
     },
 
     isSelected: function (siteId) {
-      _selectedSites.isSelected(siteId);
+      return _selectedSites.isSelected(siteId);
     },
 
     _selectionChanged: function () {

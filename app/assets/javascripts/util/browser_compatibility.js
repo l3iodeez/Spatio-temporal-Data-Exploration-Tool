@@ -24,6 +24,19 @@
     };
   }
 
+  if (!Array.prototype.select) {
+    Array.prototype.select = function (callback) {
+      var array = [];
+      for (var i = 0; i < this.length; i++) {
+        if (callback(this[i])) {
+          array.push(this[i]);
+        }
+      }
+
+      return array;
+    };
+  }
+
   //==========================
   // Array indexOf
   // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf

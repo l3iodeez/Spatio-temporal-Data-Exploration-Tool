@@ -70,7 +70,6 @@ var svg = d3.select("body")
 
 // Get the data
 d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
-  debugger
     data.forEach(function(d) {
         d.measure_date = parseDate(d.measure_date);
         d.water_level = +d.water_level;

@@ -2,6 +2,7 @@
   'use strict';
   var _sites = [];
   var CHANGE_EVENT = 'siteDataChange';
+  var GCHART_LINK = 'https://chart.googleapis.com/chart?chst=d_text_outline&chld=';
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
 
     addChangeListener: function (callback) {
@@ -17,7 +18,7 @@
         _sites = sites;
         _sites.forEach(function (site) {
           site.iconColor = '000';
-          site.icon = 'https://chart.googleapis.com/chart?chst=d_text_outline&chld=';
+          site.icon = GCHART_LINK;
           site.icon += site.iconColor + '|8|h|000|b|O';
           site.click = function (e) {
             StateStore.toggleSite(site.id);
@@ -28,26 +29,19 @@
       this._sitesChanged();
     },
 
-    updateColors: function () {
-
-      if (_sites.length > 0) {
-        _sites.forEach(function (site) {
-          if (StateStore.isSelected(site.id)) {
-            site.iconColor = 'F00';
-          } else {
-            site.iconColor = '000';
-          }
-
-          site.icon = 'https://chart.googleapis.com/chart?chst=d_text_outline&chld=';
-          site.icon += site.iconColor + '|8|h|000|b|O';
-        }.bind(this));
-      }
-
-      this._sitesChanged();
-    },
-
     siteMetaData: function () {
       return _sites;
+    },
+
+    markerData: function (siteId) {
+      var color = StateStore.isSelected(siteId) ? 'F00' : '000';
+      var siteData = _sites.find(function (site) {
+        return site.id == siteId;
+      });
+
+      siteData.iconColor = color;
+      siteData.icon = GCHART_LINK + color + '|8|h|' + color + '|b|O';
+      return siteData;
     },
 
     _sitesChanged: function () {
