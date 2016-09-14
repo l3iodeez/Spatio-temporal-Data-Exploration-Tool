@@ -3,6 +3,7 @@ var SiteSelectMap = React.createClass({
     return {
       query: {},
       selectedSites: [],
+      rectSelecter: false,
     };
   },
 
@@ -22,6 +23,10 @@ var SiteSelectMap = React.createClass({
         zoom: 3,
       }),
     });
+  },
+
+  handleKeyPress: function (evt) {
+    debugger;
   },
 
   loadMarkers: function () {
@@ -56,7 +61,10 @@ var SiteSelectMap = React.createClass({
 
   render: function () {
     return (
-      <div id="map_canvas" style={{ height: '100%', width: '100%' }}></div>
+      <div
+        id="map_canvas"
+        style={{ height: '100%', width: '100%' }}
+        onKeyPress={this.handleKeyPress}></div>
     );
   },
 
