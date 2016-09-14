@@ -1,4 +1,4 @@
-var SiteSearch = React.createClass({
+var SiteSelectMap = React.createClass({
   getInitialState: function () {
     return {
       query: {},
