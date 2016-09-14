@@ -13,7 +13,6 @@ $(document).on('ready', function () {
       };
     },
 
-
     componentWillMount: function () {
 
     },
@@ -21,9 +20,10 @@ $(document).on('ready', function () {
     _ensureLoggedIn: function () {
 
     },
+
     render: function () {
 
-      return(
+      return (
         <div className="app container group">
           <div className="map container"><SiteSelectMap /></div>
           <div className="selector container"></div>
@@ -31,7 +31,7 @@ $(document).on('ready', function () {
           <div className="graph container bottom"></div>
         </div>
       );
-    }
+    },
 
   });
   var router = (
