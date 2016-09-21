@@ -3,7 +3,6 @@ var SiteSelectMap = React.createClass({
     return {
       query: {},
       selectedSites: [],
-      rectSelecter: false,
     };
   },
 
@@ -21,12 +20,9 @@ var SiteSelectMap = React.createClass({
         lat: 37.945,
         lng: -97.64805556,
         zoom: 3,
+        click: this.mapClick,
       }),
     });
-  },
-
-  handleKeyPress: function (evt) {
-    debugger;
   },
 
   loadMarkers: function () {
@@ -59,12 +55,19 @@ var SiteSelectMap = React.createClass({
     }.bind(this));
   },
 
+  mapClick: function (evt) {
+    if (StateStore.isHeld(StateConstants.KEY_CODES.SHIFT)) {
+      debugger
+    }
+  },
+
   render: function () {
     return (
       <div
         id="map_canvas"
         style={{ height: '100%', width: '100%' }}
-        onKeyPress={this.handleKeyPress}></div>
+        onClick={this.mapClick}>
+      </div>
     );
   },
 

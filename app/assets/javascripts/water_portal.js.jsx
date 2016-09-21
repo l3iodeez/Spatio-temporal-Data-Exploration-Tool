@@ -13,8 +13,17 @@ $(document).on('ready', function () {
       };
     },
 
-    componentWillMount: function () {
+    componentDidMount: function () {
+      window.addEventListener('keydown', this.keyDown);
+      window.addEventListener('keyup', this.keyUp);
+    },
 
+    keyDown: function (evt) {
+      StateStore.keyDown(evt.which);
+    },
+
+    keyUp: function (evt) {
+      StateStore.keyUp(evt.which);
     },
 
     _ensureLoggedIn: function () {
@@ -24,7 +33,7 @@ $(document).on('ready', function () {
     render: function () {
 
       return (
-        <div className="app container group">
+        <div id="app" className="app container group">
           <div className="map container"><SiteSelectMap /></div>
           <div className="selector container"></div>
           <div className="graph container top"></div>

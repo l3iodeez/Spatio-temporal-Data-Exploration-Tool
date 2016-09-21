@@ -1,3 +1,5 @@
-var SiteConstants = {
-  SITE_METADATA_RECEIVED: 'SITE_METADATA_RECEIVED',
+var StateConstants = {
+  KEY_CODES: {
+    SHIFT: 16,
+  },
 };
