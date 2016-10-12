@@ -3,7 +3,6 @@
 <head>
   <title>Water Level Data Portal</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.8&sensor=false&libraries=geometry&language=&hl=&region="></script>
 
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
@@ -14,6 +13,10 @@
 <body>
 
 <%= yield %>
-
+<script 
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiZaJOJCz0uIyFy3xi53PqCdTvaNhSelo&libraries=drawing&callback=loadMap" 
+  async 
+  defer>
+</script>
 </body>
 </html>
