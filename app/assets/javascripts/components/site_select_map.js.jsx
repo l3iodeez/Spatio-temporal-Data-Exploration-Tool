@@ -29,6 +29,10 @@ var SiteSelectMap = React.createClass({
       }),
     });
 
+    // google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, function (e) {
+    //   console.log({lat: e.latLng.lat(), lng: e.latLng.lng()});
+    // });
+
   },
 
   loadMarkers: function () {
@@ -90,7 +94,14 @@ var SiteSelectMap = React.createClass({
         this.state.rectangle.setMap(null);
       }
 
+      var bounds = {
+        north: evt.latLng.lat(),
+        south: evt.latLng.lat(),
+        east: evt.latLng.lng(),
+        west: evt.latLng.lng(),
+      };
       this.setState({
+        bounds: bounds,
         rectangle: new google.maps.Rectangle({
           clickable: false,
           strokeColor: '#FF0000',
@@ -99,15 +110,14 @@ var SiteSelectMap = React.createClass({
           fillColor: '#FF0000',
           fillOpacity: 0.35,
           map: this.state.map,
-          bounds: {
-            north: evt.latLng.lat(),
-            south: evt.latLng.lat(),
-            east: evt.latLng.lng(),
-            west: evt.latLng.lng(),
-          },
+          bounds: bounds,
         }),
       });
-      google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, this.updateRectangle);
+      google.maps.event.addListener(
+        this.state.map,
+        StateConstants.EVENTS.MOUSEMOVE,
+        this.updateRectangle
+      );
     },
 
   mapMouseUp: function () {
@@ -118,7 +128,11 @@ var SiteSelectMap = React.createClass({
   keyChange: function (keyId, changeType) {
     if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
       console.log('keydown');
-      google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEDOWN, this.mapMouseDown);
+      google.maps.event.addListener(
+        this.state.map,
+        StateConstants.EVENTS.MOUSEDOWN,
+        this.mapMouseDown
+      );
       google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEUP, this.mapMouseUp);
 
       this.state.map.setOptions({
@@ -126,7 +140,10 @@ var SiteSelectMap = React.createClass({
         draggableCursor: 'crosshair',
         draggingCursor: 'crosshair',
       });
-    } else if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYUP) {
+    } else if (
+      keyId === StateConstants.KEY_CODES.SHIFT &&
+      changeType === StateConstants.EVENTS.KEYUP
+    ) {
       console.log('keyup');
       google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEUP);
       google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEDOWN);
@@ -141,13 +158,14 @@ var SiteSelectMap = React.createClass({
 
   updateRectangle: function (evt) {
     console.log('mousemove');
+    var bounds = {
+      north: this.state.bounds.north,
+      south: evt.latLng.lat(),
+      east: evt.latLng.lng() > this.state.bounds.west ? evt.latLng.lng() : this.state.bounds.west,
+      west: evt.latLng.lng() <= this.state.bounds.west ? evt.latLng.lng() : this.state.bounds.west,
+    };
     this.state.rectangle.setOptions({
-      bounds: {
-        north: this.state.rectangle.bounds.f.b,
-        south: evt.latLng.lat(),
-        east: evt.latLng.lng(),
-        west: this.state.rectangle.bounds.b.f,
-      },
+      bounds: bounds,
     });
   },
 
