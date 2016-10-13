@@ -28,7 +28,7 @@ var SiteSelectMap = React.createClass({
         zoom: 4,
       }),
     });
-    google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEDOWN, this.mapMouseDown);
+
   },
 
   loadMarkers: function () {
@@ -47,7 +47,7 @@ var SiteSelectMap = React.createClass({
         id: siteData[i].id,
         icon: siteData[i].icon,
       });
-      google.maps.event.addListener(marker, 'click', (function (siteId) {
+      google.maps.event.addListener(marker, StateConstants.EVENTS.CLICK, (function (siteId) {
             return function () {
               StateStore.toggleSite(siteId);
               this.updateMarkers();
@@ -85,9 +85,14 @@ var SiteSelectMap = React.createClass({
   },
 
   mapMouseDown: function (evt) {
-    if (StateStore.isHeld(StateConstants.KEY_CODES.SHIFT)) {
+      console.log('mousedown');
+      if (this.state.rectangle !== undefined) {
+        this.state.rectangle.setMap(null);
+      }
+
       this.setState({
         rectangle: new google.maps.Rectangle({
+          clickable: false,
           strokeColor: '#FF0000',
           strokeOpacity: 0.8,
           strokeWeight: 2,
@@ -103,29 +108,45 @@ var SiteSelectMap = React.createClass({
         }),
       });
       google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, this.updateRectangle);
-    }
+    },
+
+  mapMouseUp: function () {
+    console.log('mouseup');
+    google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEMOVE);
   },
 
   keyChange: function (keyId, changeType) {
-    debugger
-    if (keyId === StateConstants.KEY_CODES.SHIFT && changeType == StateConstants.EVENTS.KEYUP) {
+    if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
+      console.log('keydown');
+      google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEDOWN, this.mapMouseDown);
+      google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEUP, this.mapMouseUp);
+
       this.state.map.setOptions({
         draggable: false,
+        draggableCursor: 'crosshair',
+        draggingCursor: 'crosshair',
       });
-    } else {
+    } else if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYUP) {
+      console.log('keyup');
+      google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEUP);
+      google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEDOWN);
+      google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEMOVE);
       this.state.map.setOptions({
-        draggable: false,
+        draggable: true,
+        draggableCursor: null,
+        draggingCursor: null,
       });
     }
   },
 
   updateRectangle: function (evt) {
+    console.log('mousemove');
     this.state.rectangle.setOptions({
       bounds: {
-        north: this.state.rectangle.bounds.north,
+        north: this.state.rectangle.bounds.f.b,
         south: evt.latLng.lat(),
         east: evt.latLng.lng(),
-        west: this.state.rectangle.bounds.west,
+        west: this.state.rectangle.bounds.b.f,
       },
     });
   },
