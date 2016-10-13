@@ -10,8 +10,15 @@ var SiteSelectMap = React.createClass({
   componentDidMount: function () {
     window.loadMap = this.loadMap;
     SiteDataStore.addChangeListener(this.loadMarkers);
-    StateStore.addChangeListener('siteSelectChange', this.updateMarkers);
+    StateStore.addChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
+    StateStore.addChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
     SitesAPIUtil.fetchSiteMetadata();
+  },
+
+  componentWillUnmount: function () {
+    SiteDataStore.removeChangeListener(this.loadMarkers);
+    StateStore.removeChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
+    StateStore.removeChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
   },
 
   loadMap: function () {
@@ -21,7 +28,7 @@ var SiteSelectMap = React.createClass({
         zoom: 4,
       }),
     });
-    google.maps.event.addListener(this.state.map, 'mousedown', this.mapClick);
+    google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEDOWN, this.mapMouseDown);
   },
 
   loadMarkers: function () {
@@ -77,7 +84,7 @@ var SiteSelectMap = React.createClass({
     }.bind(this));
   },
 
-  mapClick: function (evt) {
+  mapMouseDown: function (evt) {
     if (StateStore.isHeld(StateConstants.KEY_CODES.SHIFT)) {
       this.setState({
         rectangle: new google.maps.Rectangle({
@@ -95,16 +102,32 @@ var SiteSelectMap = React.createClass({
           },
         }),
       });
-      google.maps.event.addListener(this.state.map, 'mousemove', function (evt) {
-        debugger
-        this.state.rectangle.setOptions({
-          bounds: {
-            south: evt.latLng.lat(),
-            east: evt.latLng.lng(),
-          },
-        });
-      }.bind(this));
+      google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, this.updateRectangle);
     }
+  },
+
+  keyChange: function (keyId, changeType) {
+    debugger
+    if (keyId === StateConstants.KEY_CODES.SHIFT && changeType == StateConstants.EVENTS.KEYUP) {
+      this.state.map.setOptions({
+        draggable: false,
+      });
+    } else {
+      this.state.map.setOptions({
+        draggable: false,
+      });
+    }
+  },
+
+  updateRectangle: function (evt) {
+    this.state.rectangle.setOptions({
+      bounds: {
+        north: this.state.rectangle.bounds.north,
+        south: evt.latLng.lat(),
+        east: evt.latLng.lng(),
+        west: this.state.rectangle.bounds.west,
+      },
+    });
   },
 
   render: function () {

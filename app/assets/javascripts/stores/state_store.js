@@ -2,10 +2,8 @@
   'use strict';
   var _selectedSites = new WaterData.IdStore;
   var _heldKeys = new WaterData.IdStore;
-  var SELECTED_SITE_CHANGE_EVENT = 'siteSelectChange';
-  var HELD_KEYS_CHANGE_EVENT = 'siteSelectChange';
 
-  var EVENTS = [SELECTED_SITE_CHANGE_EVENT, HELD_KEYS_CHANGE_EVENT];
+  var EVENTS = [StateConstants.EVENTS.SITE_SELECT_CHANGE, StateConstants.EVENTS.HELD_KEYS_CHANGE];
 
   root.StateStore = $.extend({}, EventEmitter.prototype, {
 
@@ -48,17 +46,17 @@
     },
 
     _selectionChanged: function () {
-      this.emit(SELECTED_SITE_CHANGE_EVENT);
+      this.emit(StateConstants.EVENTS.SITE_SELECT_CHANGE);
     },
 
     keyDown: function (keyId) {
       _heldKeys.store(keyId);
-      this._keysChanged();
+      this._keysChanged(keyId, StateConstants.EVENTS.KEYDOWN);
     },
 
     keyUp: function (keyId) {
       _heldKeys.remove(keyId);
-      this._keysChanged();
+      this._keysChanged(keyId, StateConstants.EVENTS.KEYUP);
     },
 
     heldKeys: function () {
@@ -69,8 +67,8 @@
       return _heldKeys.isSelected(keyId);
     },
 
-    _keysChanged: function () {
-      this.emit(HELD_KEYS_CHANGE_EVENT);
+    _keysChanged: function (keyId, changeType) {
+      this.emit(StateConstants.EVENTS.HELD_KEYS_CHANGE, keyId, changeType);
     },
   });
 

@@ -14,8 +14,8 @@ $(document).on('ready', function () {
     },
 
     componentDidMount: function () {
-      window.addEventListener('keydown', this.keyDown);
-      window.addEventListener('keyup', this.keyUp);
+      window.addEventListener(StateConstants.EVENTS.KEYDOWN, this.keyDown);
+      window.addEventListener(StateConstants.EVENTS.KEYUP, this.keyUp);
     },
 
     keyDown: function (evt) {
