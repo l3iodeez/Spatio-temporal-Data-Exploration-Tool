@@ -1,6 +1,8 @@
 var StateConstants = {
   KEY_CODES: {
     SHIFT: 16,
+    CMD: 91,
+    ALT: 18,
   },
   EVENTS: {
     KEYUP: 'keyup',

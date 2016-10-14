@@ -30,7 +30,7 @@ var SiteSelectMap = React.createClass({
     });
 
     // google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, function (e) {
-    //   console.log({lat: e.latLng.lat(), lng: e.latLng.lng()});
+    //   console.log(StateStore.heldKeys());
     // });
 
   },
@@ -121,13 +121,27 @@ var SiteSelectMap = React.createClass({
     },
 
   mapMouseUp: function () {
-    console.log('mouseup');
     google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEMOVE);
+    ids = [];
+    this.state.markers.forEach(function (marker) {
+      if (this.state.rectangle.getBounds().contains(marker.getPosition())) {
+        ids.push(marker.id);
+      }
+    }.bind(this));
+
+    if (StateStore.isHeld(StateConstants.KEY_CODES.ALT) ||
+        StateStore.isHeld(StateConstants.KEY_CODES.CMD)) {
+      StateStore.removeSites(ids);
+    } else {
+      StateStore.selectSites(ids);
+    }
+
+    this.state.rectangle.setOptions({ map: null });
+
   },
 
   keyChange: function (keyId, changeType) {
     if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
-      console.log('keydown');
       google.maps.event.addListener(
         this.state.map,
         StateConstants.EVENTS.MOUSEDOWN,
@@ -140,24 +154,30 @@ var SiteSelectMap = React.createClass({
         draggableCursor: 'crosshair',
         draggingCursor: 'crosshair',
       });
+      this.state.markers.forEach(function (marker) {
+        marker.setOptions({ clickable: false });
+      });
     } else if (
       keyId === StateConstants.KEY_CODES.SHIFT &&
       changeType === StateConstants.EVENTS.KEYUP
     ) {
-      console.log('keyup');
+
       google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEUP);
       google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEDOWN);
       google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEMOVE);
+
       this.state.map.setOptions({
         draggable: true,
         draggableCursor: null,
         draggingCursor: null,
       });
+      this.state.markers.forEach(function (marker) {
+        marker.setOptions({ clickable: true });
+      });
     }
   },
 
   updateRectangle: function (evt) {
-    console.log('mousemove');
     var bounds = {
       north: this.state.bounds.north,
       south: evt.latLng.lat(),

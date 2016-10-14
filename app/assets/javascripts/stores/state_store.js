@@ -27,6 +27,22 @@
       }
     },
 
+    selectSites: function (siteIds) {
+      siteIds.forEach(function (siteId) {
+        _selectedSites.store(siteId);
+      });
+
+      this._selectionChanged();
+    },
+
+    removeSites: function (siteIds) {
+      siteIds.forEach(function (siteId) {
+        _selectedSites.remove(siteId);
+      });
+
+      this._selectionChanged();
+    },
+
     selectSite: function (siteId) {
       _selectedSites.store(siteId);
       this._selectionChanged();
