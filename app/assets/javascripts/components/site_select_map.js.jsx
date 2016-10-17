@@ -36,11 +36,11 @@ var SiteSelectMap = React.createClass({
   },
 
   loadMarkers: function () {
-    this.addMarkers(SiteDataStore.siteMetaData());
+    this.createMarkers(SiteDataStore.siteMetaData());
     this.forceUpdate();
   },
 
-  addMarkers: function (siteData) {
+  createMarkers: function (siteData) {
     var markers = [];
     for (i = 0; i < siteData.length; i++) {
       var position = new google.maps.LatLng(siteData[i].lat, siteData[i].lng);
@@ -51,16 +51,20 @@ var SiteSelectMap = React.createClass({
         id: siteData[i].id,
         icon: siteData[i].icon,
       });
-      google.maps.event.addListener(marker, StateConstants.EVENTS.CLICK, (function (siteId) {
-            return function () {
-              StateStore.toggleSite(siteId);
-              this.updateMarkers();
-            }.bind(this);
-          }.bind(this)(siteData[i].id)));
+      marker.addListener(StateConstants.EVENTS.CLICK, function () {
+        return function (_marker) {
+          this.markerClick(_marker);
+        }.bind(this);
+      }.bind(this)(marker));
       markers.push(marker);
     }
 
     this.setState({ markers: markers });
+  },
+
+  markerClick: function (marker) {
+    StateStore.toggleSite(marker.id);
+    this.updateMarkers();
   },
 
   updateMarkers: function () {
