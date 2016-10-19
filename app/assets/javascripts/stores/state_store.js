@@ -32,7 +32,7 @@
         _selectedSites.store(siteId);
       });
 
-      this._selectionChanged();
+      this._selectionChanged(siteIds, []);
     },
 
     removeSites: function (siteIds) {
@@ -40,17 +40,17 @@
         _selectedSites.remove(siteId);
       });
 
-      this._selectionChanged();
+      this._selectionChanged([], siteIds);
     },
 
     selectSite: function (siteId) {
       _selectedSites.store(siteId);
-      this._selectionChanged();
+      this._selectionChanged([siteId], []);
     },
 
     removeSite: function (siteId) {
       _selectedSites.remove(siteId);
-      this._selectionChanged();
+      this._selectionChanged([], [siteId]);
     },
 
     selectedSites: function () {
@@ -61,8 +61,8 @@
       return _selectedSites.isSelected(siteId);
     },
 
-    _selectionChanged: function () {
-      this.emit(StateConstants.EVENTS.SITE_SELECT_CHANGE);
+    _selectionChanged: function (added, removed) {
+      this.emit(StateConstants.EVENTS.SITE_SELECT_CHANGE, added, removed);
     },
 
     keyDown: function (keyId) {

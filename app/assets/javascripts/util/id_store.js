@@ -3,7 +3,7 @@
   var WaterData = window.WaterData = window.WaterData || {};
 
   WaterData.IdStore = function (opt) {
-    this._selected= [];
+    this._selected = [];
     this.ids = [];
   };
 
@@ -31,19 +31,17 @@
 
   WaterData.IdStore.prototype.sortedInsert = function (element, array) {
     array.splice(this.locationOf(element, array) + 1, 0, element);
-    return array;
   };
 
   WaterData.IdStore.prototype.sortedRemove = function (element, array) {
-    array.splice(this.locationOf(element, array) + 1, 0);
-    return array;
+    array.splice(this.locationOf(element, array), 1);
   };
 
   WaterData.IdStore.prototype.locationOf = function (element, array, start, end) {
     start = start || 0;
     end = end || array.length;
     var pivot = parseInt(start + (end - start) / 2, 10);
-    if (end-start <= 1 || array[pivot] === element) return pivot;
+    if (end - start <= 1 || array[pivot] === element) return pivot;
     if (array[pivot] < element) {
       return this.locationOf(element, array, pivot, end);
     } else {

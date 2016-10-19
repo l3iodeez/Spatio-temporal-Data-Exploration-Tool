@@ -28,16 +28,10 @@ var SiteSelectMap = React.createClass({
         zoom: 4,
       }),
     });
-
-    // google.maps.event.addListener(this.state.map, StateConstants.EVENTS.MOUSEMOVE, function (e) {
-    //   console.log(StateStore.heldKeys());
-    // });
-
   },
 
   loadMarkers: function () {
     this.createMarkers(SiteDataStore.siteMetaData());
-    this.forceUpdate();
   },
 
   createMarkers: function (siteData) {
@@ -51,8 +45,8 @@ var SiteSelectMap = React.createClass({
         id: siteData[i].id,
         icon: siteData[i].icon,
       });
-      marker.addListener(StateConstants.EVENTS.CLICK, function () {
-        return function (_marker) {
+      marker.addListener(StateConstants.EVENTS.CLICK, function (_marker) {
+        return function () {
           this.markerClick(_marker);
         }.bind(this);
       }.bind(this)(marker));
@@ -64,24 +58,9 @@ var SiteSelectMap = React.createClass({
 
   markerClick: function (marker) {
     StateStore.toggleSite(marker.id);
-    this.updateMarkers();
   },
 
-  updateMarkers: function () {
-    newSelection = StateStore.selectedSites();
-    var added = newSelection.select(function (siteId) {
-      return !this.state.selectedSites.includes(siteId);
-    }.bind(this));
-
-    var removed = this.state.selectedSites.select(function (siteId) {
-      return !newSelection.includes(siteId);
-    }.bind(this));
-
-    this.setState({ selectedSites: StateStore.selectedSites() });
-    this.updateColors(added, removed);
-  },
-
-  updateColors: function (added, removed) {
+  updateMarkers: function (added, removed) {
 
     this.state.markers.forEach(function (marker) {
       if (added.includes(marker.id)) {
@@ -93,7 +72,6 @@ var SiteSelectMap = React.createClass({
   },
 
   mapMouseDown: function (evt) {
-      console.log('mousedown');
       if (this.state.rectangle !== undefined) {
         this.state.rectangle.setMap(null);
       }
@@ -141,7 +119,6 @@ var SiteSelectMap = React.createClass({
     }
 
     this.state.rectangle.setOptions({ map: null });
-
   },
 
   keyChange: function (keyId, changeType) {
