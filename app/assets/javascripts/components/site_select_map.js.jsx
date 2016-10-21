@@ -9,7 +9,7 @@ var SiteSelectMap = React.createClass({
 
   componentDidMount: function () {
     window.loadMap = this.loadMap;
-    SiteDataStore.addChangeListener(this.loadMarkers);
+    SiteDataStore.addChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
     SitesAPIUtil.fetchSiteMetadata();
@@ -112,7 +112,8 @@ var SiteSelectMap = React.createClass({
     }.bind(this));
 
     if (StateStore.isHeld(StateConstants.KEY_CODES.ALT) ||
-        StateStore.isHeld(StateConstants.KEY_CODES.CMD)) {
+        StateStore.isHeld(StateConstants.KEY_CODES.RCMD) ||
+        StateStore.isHeld(StateConstants.KEY_CODES.LCMD)) {
       StateStore.removeSites(ids);
     } else {
       StateStore.selectSites(ids);
@@ -122,6 +123,7 @@ var SiteSelectMap = React.createClass({
   },
 
   keyChange: function (keyId, changeType) {
+    console.log([StateConstants.KEY_CODES[keyId] || keyId, changeType]);
     if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
       google.maps.event.addListener(
         this.state.map,
@@ -160,10 +162,10 @@ var SiteSelectMap = React.createClass({
 
   updateRectangle: function (evt) {
     var bounds = {
-      north: this.state.bounds.north,
-      south: evt.latLng.lat(),
-      east: evt.latLng.lng() > this.state.bounds.west ? evt.latLng.lng() : this.state.bounds.west,
-      west: evt.latLng.lng() <= this.state.bounds.west ? evt.latLng.lng() : this.state.bounds.west,
+      north: Math.max(this.state.bounds.north, evt.latLng.lat()),
+      south: Math.min(this.state.bounds.south, evt.latLng.lat()),
+      east: Math.max(evt.latLng.lng(), this.state.bounds.west),
+      west: Math.min(evt.latLng.lng(), this.state.bounds.west),
     };
     this.state.rectangle.setOptions({
       bounds: bounds,

@@ -1,15 +1,19 @@
 (function (root) {
   'use strict';
   var _sites = [];
-  var CHANGE_EVENT = 'siteDataChange';
+  var EVENTS = [SiteConstants.EVENTS.SITE_METADATA_CHANGE, SiteConstants.EVENTS.SERIES_DATA_CHANGE];
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
 
-    addChangeListener: function (callback) {
-      this.on(CHANGE_EVENT, callback);
+    addChangeListener: function (eventType, callback) {
+      if (EVENTS.includes(eventType)) {
+        this.on(eventType, callback);
+      } else {
+        throw "Invalid event type '" + eventType + "'.";
+      }
     },
 
-    removeChangeListener: function (callback) {
-      this.removeListener(CHANGE_EVENT, callback);
+    removeChangeListener: function (eventType, callback) {
+      this.removeListener(eventType, callback);
     },
 
     storeMetaData: function (sites) {
@@ -41,7 +45,7 @@
     },
 
     _sitesChanged: function () {
-      this.emit(CHANGE_EVENT);
+      this.emit(SiteConstants.EVENTS.SITE_METADATA_CHANGE);
     },
 
     dispatcherId: AppDispatcher.register(function (payload) {
