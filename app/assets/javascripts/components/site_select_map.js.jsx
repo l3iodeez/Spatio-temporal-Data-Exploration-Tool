@@ -16,7 +16,7 @@ var SiteSelectMap = React.createClass({
   },
 
   componentWillUnmount: function () {
-    SiteDataStore.removeChangeListener(this.loadMarkers);
+    SiteDataStore.removeChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.removeChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
     StateStore.removeChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
   },

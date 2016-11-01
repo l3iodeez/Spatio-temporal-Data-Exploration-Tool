@@ -14,5 +14,20 @@
         },
       });
     },
+
+    fetchSeriesData: function (pullIds, callback, siteIds) {
+      $.ajax({
+        url: '/api/series',
+        method: 'GET',
+        data: pullIds,
+        dataType: 'JSON',
+        success: function (data) {
+          ApiActions.receiveSeriesData(data);
+          if (typeof callback === 'function') {
+            callback(SiteDataStore.seriesData(siteIds));
+          }
+        },
+      });
+    },
   };
 }(this));

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'react/' => 'static_pages#root'
   namespace :api, defaults: {format: :json} do
     get 'sites' => 'sites#api_index'
+    get 'series' => 'sites#load_series_data'
     get 'search' => 'sites#search'
   end
   # The priority is based upon order of creation: first created -> highest priority.

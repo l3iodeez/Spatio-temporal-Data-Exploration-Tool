@@ -6,7 +6,10 @@ class Api::SitesController < ApplicationController
     render :api_index
   end
 
-
+  def load_series_data
+    binding.pry
+    render :series_data
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

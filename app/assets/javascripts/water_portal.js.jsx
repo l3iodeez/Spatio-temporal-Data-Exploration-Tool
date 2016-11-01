@@ -33,11 +33,11 @@ $(document).on('ready', function () {
     render: function () {
 
       return (
-        <div id="app" className="app container group">
-          <div className="map container"><SiteSelectMap /></div>
-          <div className="selector container"></div>
-          <div className="graph container top"></div>
-          <div className="graph container bottom"></div>
+        <div id="app" className="app group">
+          <div className="map container top left"><SiteSelectMap /></div>
+          <div className="selector container top right"></div>
+          <div className="graph container bottom left"><SeriesGraph /></div>
+          <div className="graph container bottom right"><SeriesGraph /></div>
         </div>
       );
     },

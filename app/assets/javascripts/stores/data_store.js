@@ -1,6 +1,7 @@
 (function (root) {
   'use strict';
   var _sites = [];
+  var _series = {};
   var EVENTS = [SiteConstants.EVENTS.SITE_METADATA_CHANGE, SiteConstants.EVENTS.SERIES_DATA_CHANGE];
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
 
@@ -48,9 +49,44 @@
       this.emit(SiteConstants.EVENTS.SITE_METADATA_CHANGE);
     },
 
+    storeSeriesData: function (series) {
+      $.extend(_sites, series);
+    },
+
+    _seriesChanged: function () {
+      this.emit(SiteConstants.EVENTS.SERIES_DATA_CHANGE);
+    },
+
+    loadSeries: function (siteIds, callback) {
+      var pullIds = [];
+      siteIds.forEach(function (id) {
+        if (typeof _series[id] !== 'object') {
+          pullIds.push(id);
+        }
+      });
+
+      if (pullIds.count === 0) {
+        callback(this.seriesData(siteIds));
+      } else {
+        debugger;
+        SitesAPIUtil.fetchSeriesData(pullIds, callback, siteIds);
+      }
+    },
+
+    seriesData: function (siteIds) {
+      var selectionData = {};
+      siteIds.forEach(function (id) {
+        selectionData[id] = _series[id];
+      });
+
+      return selectionData;
+    },
+
     dispatcherId: AppDispatcher.register(function (payload) {
       if (payload.actionType === SiteConstants.SITE_METADATA_RECEIVED) {
         SiteDataStore.storeMetaData(payload.sites);
+      } else if (payload.actionType === SiteConstants.SERIES_DATA_RECEIVED) {
+        SiteDataStore.storeSeriesData(payload.series);
       }
     }),
   });
