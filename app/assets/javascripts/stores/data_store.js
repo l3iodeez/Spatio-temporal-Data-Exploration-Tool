@@ -50,14 +50,23 @@
     },
 
     storeSeriesData: function (series) {
-      $.extend(_sites, series);
+      debugger;
+      series.forEach(function (site) {
+        var _siteSeries = {};
+        _siteSeries[site.id] = site.measurements;
+        $.extend(_series, _siteSeries);
+      });
+
+      this._seriesChanged(this.toPull);
+      this.toPull = [];
     },
 
-    _seriesChanged: function () {
-      this.emit(SiteConstants.EVENTS.SERIES_DATA_CHANGE);
+    _seriesChanged: function (pullIds) {
+      this.emit(SiteConstants.EVENTS.SERIES_DATA_CHANGE, pullIds);
     },
 
     loadSeries: function (siteIds, callback) {
+      this.toPull = siteIds.slice(0);
       var pullIds = [];
       siteIds.forEach(function (id) {
         if (typeof _series[id] !== 'object') {
@@ -65,10 +74,10 @@
         }
       });
 
+      this.toPull = pullIds.slice(0);
       if (pullIds.count === 0) {
         callback(this.seriesData(siteIds));
       } else {
-        debugger;
         SitesAPIUtil.fetchSeriesData(pullIds, callback, siteIds);
       }
     },
@@ -76,10 +85,23 @@
     seriesData: function (siteIds) {
       var selectionData = {};
       siteIds.forEach(function (id) {
-        selectionData[id] = _series[id];
-      });
+        selectionData[id] = this._seriesString(id);
+      }.bind(this));
 
       return selectionData;
+    },
+
+    _seriesString: function (siteId) {
+      var csvData = '';
+      _series[siteId].forEach(function (measurement) {
+        csvData += measurement.water_level + ',' + measurement.measure_date + '\n';
+      });
+
+      return {
+        siteId: siteId,
+        measure_type: _series[siteId][0].measure_type,
+        series: csvData,
+      };
     },
 
     dispatcherId: AppDispatcher.register(function (payload) {

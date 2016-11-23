@@ -123,7 +123,6 @@ var SiteSelectMap = React.createClass({
   },
 
   keyChange: function (keyId, changeType) {
-    console.log([StateConstants.KEY_CODES[keyId] || keyId, changeType]);
     if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
       google.maps.event.addListener(
         this.state.map,

@@ -7,8 +7,8 @@ class Api::SitesController < ApplicationController
   end
 
   def load_series_data
-    binding.pry
-    render :series_data
+    @sites = Site.where(id: params[:pullIds])
+    render json: @sites
   end
 
   private

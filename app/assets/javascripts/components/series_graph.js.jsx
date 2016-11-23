@@ -9,12 +9,13 @@ var SeriesGraph = React.createClass({
     SiteDataStore.addChangeListener(SiteConstants.EVENTS.SERIES_DATA_CHANGE, this.gotData);
   },
 
-  gotData: function (data) {
+  gotData: function (receivedIds) {
     debugger;
+    SiteDataStore.seriesData(receivedIds);
   },
 
   loadSelectedSeries: function () {
-    SiteDataStore.loadSeries(StateStore.selectedSites(), this.gotData);
+    SiteDataStore.loadSeries(StateStore.selectedSites());
   },
 
   render: function () {

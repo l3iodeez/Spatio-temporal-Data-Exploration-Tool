@@ -18,9 +18,9 @@
     fetchSeriesData: function (pullIds, callback, siteIds) {
       $.ajax({
         url: '/api/series',
-        method: 'GET',
-        data: pullIds,
-        dataType: 'JSON',
+        method: 'POST',
+        data: { pullIds: pullIds },
+        dataType: 'json',
         success: function (data) {
           ApiActions.receiveSeriesData(data);
           if (typeof callback === 'function') {
