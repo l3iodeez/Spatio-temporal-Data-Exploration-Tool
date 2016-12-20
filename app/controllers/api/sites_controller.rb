@@ -1,5 +1,5 @@
 class Api::SitesController < ApplicationController
-  before_action :set_site, only: [:show, :edit, :update, :destroy]
+  before_action :set_site, only: [:show, :edit, :update, :destroy, :series_csv]
 
   def api_index
     @sites = Site.where("measure_count > 0")
@@ -9,6 +9,10 @@ class Api::SitesController < ApplicationController
   def load_series_data
     @sites = Site.where(id: params[:pullIds])
     render json: @sites
+  end
+  
+  def series_csv
+    render text: @site.measurements.pluck(:water_level).join(',')
   end
 
   private

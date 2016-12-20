@@ -37,7 +37,7 @@ $(document).on('ready', function () {
           <div className="map container top left"><SiteSelectMap /></div>
           <div className="selector container top right"></div>
           <div className="graph container bottom left"><SeriesGraph /></div>
-          <div className="graph container bottom right"><SeriesGraph /></div>
+          <div className="graph container bottom right"><GrabData /></div>
         </div>
       );
     },

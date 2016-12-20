@@ -85,8 +85,8 @@
     seriesData: function (siteIds) {
       var selectionData = {};
       siteIds.forEach(function (id) {
-        selectionData[id] = this._seriesString(id);
-      }.bind(this));
+        selectionData[id] = _series[id];
+      });
 
       return selectionData;
     },
@@ -102,6 +102,15 @@
         measure_type: _series[siteId][0].measure_type,
         series: csvData,
       };
+    },
+
+    _seriesObject: function (siteId) {
+      var array = [];
+      _series[siteId].forEach(function (measurement) {
+        array.push({ date: measurement.date, water_level: measurement.water_level });
+      });
+
+      return array;
     },
 
     dispatcherId: AppDispatcher.register(function (payload) {

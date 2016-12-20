@@ -8,7 +8,6 @@
 //= require d3
 //= require eventemitter
 //= require flux
-//= require d3
 //= require sample-data
 //= require_tree ./components
 //= require_tree ./util

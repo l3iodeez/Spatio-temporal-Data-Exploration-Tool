@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     get 'sites' => 'sites#api_index'
     post 'series' => 'sites#load_series_data'
     get 'search' => 'sites#search'
+    get 'series_csv/:id/' => 'sites#series_csv'
   end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
