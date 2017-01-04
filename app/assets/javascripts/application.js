@@ -8,6 +8,8 @@
 //= require d3
 //= require eventemitter
 //= require flux
+//= require chartkick.js
+//= require react-chartkick.min
 //= require sample-data
 //= require_tree ./components
 //= require_tree ./util

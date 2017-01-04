@@ -42,6 +42,7 @@ gem 'react-rails', '~> 1.4.0'
 gem 'flux-rails-assets', '~> 2.1.0'
 gem 'markerclustererplus-rails'
 gem 'd3-rails'
+gem 'chartkick'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

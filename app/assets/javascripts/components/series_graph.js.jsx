@@ -2,6 +2,7 @@ var SeriesGraph = React.createClass({
   getInitialState: function () {
     return {
       selection: [],
+      series: [],
     };
   },
 
@@ -9,7 +10,7 @@ var SeriesGraph = React.createClass({
     var el = ReactDOM.findDOMNode(this).firstChild;
     var chart = new d3Charts.LineChart({
       width: '100%',
-      height: '200px',
+      height: '100%',
       el: el,
       selection: this.state.selection,
     });
@@ -31,14 +32,16 @@ var SeriesGraph = React.createClass({
   },
 
   loadData: function () {
-    this.state.chart.requestData(this.state);
+    debugger;
+    this.setState({ series: SiteDataStore.loadSeries(this.state.selection, this.chart.receiveData.bind(this.chart)) });
   },
 
   render: function () {
     return (
-      <div className='graph-container'>
-        <div className='graph'></div>
-        <button onClick={this.loadData}>ReloadReloadReloadReloadReload</button>
+      <div>
+        <div className='graph-container'>
+          <LineChart data={this.state.series} />
+        </div>
       </div>
     );
   },
