@@ -1,47 +1,27 @@
 var SeriesGraph = React.createClass({
   getInitialState: function () {
     return {
-      selection: [],
       series: [],
     };
   },
 
   componentDidMount: function () {
-    var el = ReactDOM.findDOMNode(this).firstChild;
-    var chart = new d3Charts.LineChart({
-      width: '100%',
-      height: '100%',
-      el: el,
-      selection: this.state.selection,
-    });
 
-    StateStore.addChangeListener(
-        StateConstants.EVENTS.SITE_SELECT_CHANGE,
-        this.updateSelection
-      );
-
-    this.setState({
-        chart: chart,
-      });
-  },
-
-  updateSelection: function () {
-    this.setState({
-      selection: StateStore.selectedSites(),
-    });
   },
 
   loadData: function () {
-    debugger;
-    this.setState({ series: SiteDataStore.loadSeries(this.state.selection, this.chart.receiveData.bind(this.chart)) });
+    this.setState({ series: SiteDataStore.loadSeries(StateStore.selectedSites()) });
   },
 
   render: function () {
+    debugger;
     return (
-      <div>
-        <div className='graph-container'>
-          <LineChart data={this.state.series} />
+      <div className='graph-container'>
+        <div >
+          {/* <LineChart data={this.state.series} /> */}
+          <LineChart data={{ '2013-02-10 00:00:00 -0800': 11, '2013-02-11 00:00:00 -0800': 6 }} />
         </div>
+        <button onClick={this.loadData}>FetchSelected</button>
       </div>
     );
   },

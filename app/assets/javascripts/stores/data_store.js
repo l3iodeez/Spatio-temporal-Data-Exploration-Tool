@@ -50,7 +50,6 @@
     },
 
     storeSeriesData: function (series) {
-      debugger;
       series.forEach(function (site) {
         var _siteSeries = {};
         _siteSeries[site.id] = site.measurements;
@@ -85,7 +84,10 @@
     seriesData: function (siteIds) {
       var selectionData = {};
       siteIds.forEach(function (id) {
-        selectionData[id] = _series[id];
+        _series[id].forEach(function (measurement) {
+          selectionData[id] = [];
+          selectionData[id][measurement.measure_date] = measurement.water_level;
+        });
       });
 
       return selectionData;
