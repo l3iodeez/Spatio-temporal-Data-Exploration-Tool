@@ -36,14 +36,14 @@ var SiteSelectMap = React.createClass({
 
   createMarkers: function (siteData) {
     var markers = [];
-    for (i = 0; i < siteData.length; i++) {
-      var position = new google.maps.LatLng(siteData[i].lat, siteData[i].lng);
+    Object.keys(siteData).forEach(function (siteId) {
+      var position = new google.maps.LatLng(siteData[siteId].lat, siteData[siteId].lng);
       marker = new google.maps.Marker({
         position: position,
         map: this.state.map,
-        title: siteData[i].site_name,
-        id: siteData[i].id,
-        icon: siteData[i].icon,
+        title: siteData[siteId].site_name,
+        id: siteData[siteId].id,
+        icon: siteData[siteId].icon,
       });
       marker.addListener(StateConstants.EVENTS.CLICK, function (_marker) {
         return function () {
@@ -51,7 +51,8 @@ var SiteSelectMap = React.createClass({
         }.bind(this);
       }.bind(this)(marker));
       markers.push(marker);
-    }
+
+    }.bind(this));
 
     this.setState({ markers: markers });
   },

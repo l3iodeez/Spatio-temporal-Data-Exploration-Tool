@@ -1,7 +1,7 @@
 var SeriesGraph = React.createClass({
   getInitialState: function () {
     return {
-      series: [],
+      series: {},
     };
   },
 
@@ -9,19 +9,21 @@ var SeriesGraph = React.createClass({
 
   },
 
-  loadData: function () {
-    this.setState({ series: SiteDataStore.loadSeries(StateStore.selectedSites()) });
+  requestData: function () {
+    SiteDataStore.loadSeries(StateStore.selectedSites(), this.loadData);
+  },
+
+  loadData: function (data) {
+    this.setState({ series: data });
   },
 
   render: function () {
-    debugger;
     return (
       <div className='graph-container'>
         <div >
-          {/* <LineChart data={this.state.series} /> */}
-          <LineChart data={{ '2013-02-10 00:00:00 -0800': 11, '2013-02-11 00:00:00 -0800': 6 }} />
+          <LineChart data={this.state.series} />
         </div>
-        <button onClick={this.loadData}>FetchSelected</button>
+        <button onClick={this.requestData}>FetchSelected</button>
       </div>
     );
   },

@@ -70,14 +70,12 @@ d3Charts.LineChart.prototype.destroy = function (el) {
 };
 
 d3Charts.LineChart.prototype._drawLines = function (el, data) {
-  debugger;
   Object.keys(data).forEach(function (key) {
     series = data[key];
     this.x.domain(d3.extent(data, function (d) { return d.measure_date; }));
 
     this.y.domain([0, d3.max(data, function (d) { return d.water_level; })]);
 
-    debugger;
     d3.json(series, function (data) {
       return data.measure_date;
     });

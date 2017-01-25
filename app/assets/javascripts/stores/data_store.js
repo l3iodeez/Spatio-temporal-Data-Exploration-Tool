@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  var _sites = [];
+  var _sites = {};
   var _series = {};
   var EVENTS = [SiteConstants.EVENTS.SITE_METADATA_CHANGE, SiteConstants.EVENTS.SERIES_DATA_CHANGE];
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
@@ -18,12 +18,15 @@
     },
 
     storeMetaData: function (sites) {
-      if (_sites.length === 0) {
-        _sites = sites;
-        _sites.forEach(function (site) {
-          site.iconColor = '000';
-          site.icon = SiteConstants.GCHART_LINK;
-          site.icon += site.iconColor + '|8|h|000|b|O';
+      if (Object.keys(_sites).length === 0) {
+        sites.forEach(function (site) {
+          _sites[site.id] = site;
+        });
+
+        Object.keys(_sites).forEach(function (siteId) {
+          _sites[siteId].iconColor = '000';
+          _sites[siteId].icon = SiteConstants.GCHART_LINK;
+          _sites[siteId].icon += _sites[siteId].iconColor + '|8|h|000|b|O';
         });
       }
 
@@ -82,15 +85,43 @@
     },
 
     seriesData: function (siteIds) {
-      var selectionData = {};
+      var selectionData = [];
       siteIds.forEach(function (id) {
-        _series[id].forEach(function (measurement) {
-          selectionData[id] = [];
-          selectionData[id][measurement.measure_date] = measurement.water_level;
-        });
+        if (_series[id]) {
+
+          var seriesObject = {};
+
+          debugger;
+
+          seriesObject.name = _sites[id].site_name;
+          seriesObject.data = {};
+          _series[id].forEach(function (measurement) {
+            seriesObject.data[measurement.measure_date] = measurement.water_level;
+          });
+
+          selectionData.push(seriesObject);
+
+        }
+
       });
 
       return selectionData;
+    },
+
+    transformData: function (data) {
+      var selectionData = [];
+      data.forEach(function (site) {
+
+        var seriesObject = {};
+        seriesObject.name = site.site_name;
+        seriesObject.data = {};
+        site.measurements.forEach(function (measurement) {
+          seriesObject.data[measurement.measure_date] = measurement.water_level;
+        });
+
+        selectionData.push(seriesObject);
+
+      });
     },
 
     _seriesString: function (siteId) {

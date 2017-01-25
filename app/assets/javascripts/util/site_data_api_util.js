@@ -23,8 +23,10 @@
         dataType: 'json',
         success: function (data) {
           ApiActions.receiveSeriesData(data);
+          var ids = pullIds;
           if (typeof callback === 'function') {
-            callback(SiteDataStore.seriesData(siteIds));
+            var pulledData = SiteDataStore.transformData(data);
+            callback($.extend(SiteDataStore.seriesData(siteIds), pulledData));
           }
         },
       });
