@@ -53,11 +53,7 @@
     },
 
     storeSeriesData: function (series) {
-      series.forEach(function (site) {
-        var _siteSeries = {};
-        _siteSeries[site.id] = site.measurements;
-        $.extend(_series, _siteSeries);
-      });
+      $.extend(_series, series);
 
       this._seriesChanged(this.toPull);
       this.toPull = [];
@@ -85,23 +81,9 @@
     },
 
     seriesData: function (siteIds) {
-      var selectionData = [];
+      var selectionData = {};
       siteIds.forEach(function (id) {
-        if (_series[id]) {
-
-          var seriesObject = {};
-
-          debugger;
-
-          seriesObject.name = _sites[id].site_name;
-          seriesObject.data = {};
-          _series[id].forEach(function (measurement) {
-            seriesObject.data[measurement.measure_date] = measurement.water_level;
-          });
-
-          selectionData.push(seriesObject);
-
-        }
+        selectionData[id] = _series[id];
 
       });
 

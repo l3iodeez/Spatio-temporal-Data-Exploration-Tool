@@ -25,8 +25,8 @@
           ApiActions.receiveSeriesData(data);
           var ids = pullIds;
           if (typeof callback === 'function') {
-            var pulledData = SiteDataStore.transformData(data);
-            callback($.extend(SiteDataStore.seriesData(siteIds), pulledData));
+            // var pulledData = SiteDataStore.transformData(data);
+            callback($.extend(SiteDataStore.seriesData(siteIds), data));
           }
         },
       });

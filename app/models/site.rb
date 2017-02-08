@@ -1,5 +1,7 @@
 class Site < ActiveRecord::Base
 has_many :measurements
+attr_accessor :measurements_cache
+
 reverse_geocoded_by :latitude, :longitude do |obj,results|
   if geo = results.first
   	obj.address = geo.address.split(',')[0]
