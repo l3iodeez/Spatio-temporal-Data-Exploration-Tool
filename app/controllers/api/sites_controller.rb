@@ -10,12 +10,12 @@ class Api::SitesController < ApplicationController
     @measurements = Measurement.where(site_id: params[:pullIds]).order(:measure_date)
     data_block = {}
     @measurements.each do |measurement|
-    data_block[measurement.site_id] ||= {}
-    data_block[measurement.site_id]["#{measurement.measure_date.to_time}"] = measurement.water_level.to_i
+      data_block[measurement.site_id] ||= {}
+      data_block[measurement.site_id]["#{measurement.measure_date.to_time}"] = measurement.water_level.to_i
     end
     render json: data_block
   end
-  
+
   def series_csv
     render text: @site.measurements.pluck(:water_level).join(',')
   end

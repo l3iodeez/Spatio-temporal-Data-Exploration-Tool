@@ -1,29 +1,29 @@
-(function (root) {
+(function(root) {
   'use strict';
   var _sites = {};
   var _series = {};
   var EVENTS = [SiteConstants.EVENTS.SITE_METADATA_CHANGE, SiteConstants.EVENTS.SERIES_DATA_CHANGE];
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
 
-    addChangeListener: function (eventType, callback) {
+    addChangeListener: function(eventType, callback) {
       if (EVENTS.includes(eventType)) {
         this.on(eventType, callback);
       } else {
-        throw "Invalid event type '" + eventType + "'.";
+        throw 'Invalid event type \'' + eventType + '\'.';
       }
     },
 
-    removeChangeListener: function (eventType, callback) {
+    removeChangeListener: function(eventType, callback) {
       this.removeListener(eventType, callback);
     },
 
-    storeMetaData: function (sites) {
+    storeMetaData: function(sites) {
       if (Object.keys(_sites).length === 0) {
-        sites.forEach(function (site) {
+        sites.forEach(function(site) {
           _sites[site.id] = site;
         });
 
-        Object.keys(_sites).forEach(function (siteId) {
+        Object.keys(_sites).forEach(function(siteId) {
           _sites[siteId].iconColor = '000';
           _sites[siteId].icon = SiteConstants.GCHART_LINK;
           _sites[siteId].icon += _sites[siteId].iconColor + '|8|h|000|b|O';
@@ -33,13 +33,13 @@
       this._sitesChanged();
     },
 
-    siteMetaData: function () {
+    siteMetaData: function() {
       return _sites;
     },
 
-    markerData: function (siteId) {
+    markerData: function(siteId) {
       var color = StateStore.isSelected(siteId) ? 'F00' : '000';
-      var siteData = _sites.find(function (site) {
+      var siteData = _sites.find(function(site) {
         return site.id == siteId;
       });
 
@@ -48,25 +48,26 @@
       return siteData;
     },
 
-    _sitesChanged: function () {
+    _sitesChanged: function() {
       this.emit(SiteConstants.EVENTS.SITE_METADATA_CHANGE);
     },
 
-    storeSeriesData: function (series) {
+    storeSeriesData: function(series) {
       $.extend(_series, series);
 
       this._seriesChanged(this.toPull);
       this.toPull = [];
     },
 
-    _seriesChanged: function (pullIds) {
+    _seriesChanged: function(pullIds) {
       this.emit(SiteConstants.EVENTS.SERIES_DATA_CHANGE, pullIds);
     },
 
-    loadSeries: function (siteIds, callback) {
+    loadSeries: function(siteIds, callback) {
+      debugger;
       this.toPull = siteIds.slice(0);
       var pullIds = [];
-      siteIds.forEach(function (id) {
+      siteIds.forEach(function(id) {
         if (typeof _series[id] !== 'object') {
           pullIds.push(id);
         }
@@ -80,24 +81,23 @@
       }
     },
 
-    seriesData: function (siteIds) {
-      var selectionData = {};
-      siteIds.forEach(function (id) {
-        selectionData[id] = _series[id];
-
+    seriesData: function(siteIds) {
+      var selectionData = [];
+      siteIds.forEach(function(id) {
+        selectionData.push({name: id , data: _series[id]});
       });
 
       return selectionData;
     },
 
-    transformData: function (data) {
+    transformData: function(data) {
       var selectionData = [];
-      data.forEach(function (site) {
+      data.forEach(function(site) {
 
         var seriesObject = {};
         seriesObject.name = site.site_name;
         seriesObject.data = {};
-        site.measurements.forEach(function (measurement) {
+        site.measurements.forEach(function(measurement) {
           seriesObject.data[measurement.measure_date] = measurement.water_level;
         });
 
@@ -106,9 +106,9 @@
       });
     },
 
-    _seriesString: function (siteId) {
+    _seriesString: function(siteId) {
       var csvData = '';
-      _series[siteId].forEach(function (measurement) {
+      _series[siteId].forEach(function(measurement) {
         csvData += measurement.water_level + ',' + measurement.measure_date + '\n';
       });
 
@@ -119,16 +119,16 @@
       };
     },
 
-    _seriesObject: function (siteId) {
+    _seriesObject: function(siteId) {
       var array = [];
-      _series[siteId].forEach(function (measurement) {
-        array.push({ date: measurement.date, water_level: measurement.water_level });
+      _series[siteId].forEach(function(measurement) {
+        array.push({date: measurement.date, water_level: measurement.water_level});
       });
 
       return array;
     },
 
-    dispatcherId: AppDispatcher.register(function (payload) {
+    dispatcherId: AppDispatcher.register(function(payload) {
       if (payload.actionType === SiteConstants.SITE_METADATA_RECEIVED) {
         SiteDataStore.storeMetaData(payload.sites);
       } else if (payload.actionType === SiteConstants.SERIES_DATA_RECEIVED) {

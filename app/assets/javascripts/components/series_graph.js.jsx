@@ -1,23 +1,23 @@
 var SeriesGraph = React.createClass({
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       series: {},
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
 
   },
 
-  requestData: function () {
+  requestData: function() {
     SiteDataStore.loadSeries(StateStore.selectedSites(), this.loadData);
   },
 
-  loadData: function (data) {
-    this.setState({ series: data });
+  loadData: function(data) {
+    this.setState({series: data});
   },
 
-  render: function () {
+  render: function() {
     return (
       <div className='graph-container'>
         <div >
