@@ -2,7 +2,10 @@
   'use strict';
   var _sites = {};
   var _series = {};
-  var EVENTS = [SiteConstants.EVENTS.SITE_METADATA_CHANGE, SiteConstants.EVENTS.SERIES_DATA_CHANGE];
+  var EVENTS = [
+    SiteConstants.EVENTS.SITE_METADATA_CHANGE,
+    SiteConstants.EVENTS.SERIES_DATA_CHANGE,
+  ];
   root.SiteDataStore = $.extend({}, EventEmitter.prototype, {
 
     addChangeListener: function(eventType, callback) {
@@ -64,8 +67,7 @@
     },
 
     loadSeries: function(siteIds, callback) {
-      debugger;
-      this.toPull = siteIds.slice(0);
+
       var pullIds = [];
       siteIds.forEach(function(id) {
         if (typeof _series[id] !== 'object') {
@@ -74,7 +76,7 @@
       });
 
       this.toPull = pullIds.slice(0);
-      if (pullIds.count === 0) {
+      if (pullIds.length === 0) {
         callback(this.seriesData(siteIds));
       } else {
         SitesAPIUtil.fetchSeriesData(pullIds, callback, siteIds);

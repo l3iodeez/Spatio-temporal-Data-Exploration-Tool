@@ -27,7 +27,7 @@
           if (typeof callback === 'function') {
             debugger;
             // var pulledData = SiteDataStore.transformData(data);
-            callback(SiteDataStore.seriesData(siteIds.concat(ids)));
+            callback(SiteDataStore.seriesData(Array.from(new Set(siteIds.concat(ids)))));
           }
         },
       });
