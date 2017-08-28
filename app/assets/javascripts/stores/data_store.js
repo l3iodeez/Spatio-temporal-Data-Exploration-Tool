@@ -87,10 +87,6 @@
       var selectionData = {};
       siteIds.forEach(function (id) {
         selectionData[id] = {};
-        selectionData[id].cols = [
-          { id: 'date', label: 'Measurement Date', type: 'datetime' },
-          { id: 'waterLevel', label: 'Water Level', type: 'number' },
-        ];
         selectionData[id].rows = [];
         _series[id].forEach(function (seriesData) {
           selectionData[id].rows.push(
