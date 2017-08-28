@@ -4,7 +4,6 @@
 //= require react
 //= require react_ujs
 //= require ReactRouter.min
-//= require markerclusterer
 //= require d3
 //= require eventemitter
 //= require flux

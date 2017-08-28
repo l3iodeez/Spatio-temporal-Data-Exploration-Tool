@@ -16,7 +16,6 @@ gem 'hammerjs_rails'
 gem 'geocoder'
 gem 'responders'
 gem 'jquery-ui-rails'
-gem 'd3-rails'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -37,12 +36,17 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModelSerializers
 gem 'active_model_serializers'
 
-
+# Use React via react-rails
 gem 'react-rails', '~> 1.4.0'
 gem 'flux-rails-assets', '~> 2.1.0'
-gem 'markerclustererplus-rails'
+
+# Use D3 visualizations
 gem 'd3-rails'
+# Use Chartkick charts
 gem 'chartkick'
+# Use statsample for statsample
+gem 'statsample'
+gem 'statsample-timeseries'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

@@ -1,5 +1,5 @@
 var SiteSelectMap = React.createClass({
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       query: {},
       selectedSites: [],
@@ -7,7 +7,7 @@ var SiteSelectMap = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     window.loadMap = this.loadMap;
     SiteDataStore.addChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
@@ -15,28 +15,28 @@ var SiteSelectMap = React.createClass({
     SitesAPIUtil.fetchSiteMetadata();
   },
 
-  componentWillUnmount: function () {
+  componentWillUnmount: function() {
     SiteDataStore.removeChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.removeChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
     StateStore.removeChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
   },
 
-  loadMap: function () {
+  loadMap: function() {
     this.setState({
       map: new google.maps.Map(document.getElementById('map_canvas'), {
-        center: { lat: 37.945, lng: -97.648, },
+        center: {lat: 37.945, lng: -97.648,},
         zoom: 4,
       }),
     });
   },
 
-  loadMarkers: function () {
+  loadMarkers: function() {
     this.createMarkers(SiteDataStore.siteMetaData());
   },
 
-  createMarkers: function (siteData) {
+  createMarkers: function(siteData) {
     var markers = [];
-    Object.keys(siteData).forEach(function (siteId) {
+    Object.keys(siteData).forEach(function(siteId) {
       var position = new google.maps.LatLng(siteData[siteId].lat, siteData[siteId].lng);
       marker = new google.maps.Marker({
         position: position,
@@ -45,8 +45,8 @@ var SiteSelectMap = React.createClass({
         id: siteData[siteId].id,
         icon: siteData[siteId].icon,
       });
-      marker.addListener(StateConstants.EVENTS.CLICK, function (_marker) {
-        return function () {
+      marker.addListener(StateConstants.EVENTS.CLICK, function(_marker) {
+        return function() {
           this.markerClick(_marker);
         }.bind(this);
       }.bind(this)(marker));
@@ -54,16 +54,16 @@ var SiteSelectMap = React.createClass({
 
     }.bind(this));
 
-    this.setState({ markers: markers });
+    this.setState({markers: markers});
   },
 
-  markerClick: function (marker) {
+  markerClick: function(marker) {
     StateStore.toggleSite(marker.id);
   },
 
-  updateMarkers: function (added, removed) {
+  updateMarkers: function(added, removed) {
 
-    this.state.markers.forEach(function (marker) {
+    this.state.markers.forEach(function(marker) {
       if (added.includes(marker.id)) {
         marker.setIcon(SiteConstants.GCHART_LINK + 'F00|8|h|F00|b|O');
       } else if (removed.includes(marker.id)) {
@@ -72,7 +72,7 @@ var SiteSelectMap = React.createClass({
     }.bind(this));
   },
 
-  mapMouseDown: function (evt) {
+  mapMouseDown: function(evt) {
       if (this.state.rectangle !== undefined) {
         this.state.rectangle.setMap(null);
       }
@@ -103,10 +103,10 @@ var SiteSelectMap = React.createClass({
       );
     },
 
-  mapMouseUp: function () {
+  mapMouseUp: function() {
     google.maps.event.clearListeners(this.state.map, StateConstants.EVENTS.MOUSEMOVE);
     ids = [];
-    this.state.markers.forEach(function (marker) {
+    this.state.markers.forEach(function(marker) {
       if (this.state.rectangle.getBounds().contains(marker.getPosition())) {
         ids.push(marker.id);
       }
@@ -120,10 +120,10 @@ var SiteSelectMap = React.createClass({
       StateStore.selectSites(ids);
     }
 
-    this.state.rectangle.setOptions({ map: null });
+    this.state.rectangle.setOptions({map: null});
   },
 
-  keyChange: function (keyId, changeType) {
+  keyChange: function(keyId, changeType) {
     if (keyId === StateConstants.KEY_CODES.SHIFT && changeType === StateConstants.EVENTS.KEYDOWN) {
       google.maps.event.addListener(
         this.state.map,
@@ -137,7 +137,7 @@ var SiteSelectMap = React.createClass({
         draggableCursor: 'crosshair',
         draggingCursor: 'crosshair',
       });
-      this.state.markers.forEach(function (marker) {
+      this.state.markers.forEach(function(marker) {
         marker.setOptions({ clickable: false });
       });
     } else if (

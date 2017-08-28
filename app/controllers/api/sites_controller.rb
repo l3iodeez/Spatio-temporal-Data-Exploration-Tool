@@ -10,8 +10,12 @@ class Api::SitesController < ApplicationController
     @measurements = Measurement.where(site_id: params[:pullIds]).order(:measure_date)
     data_block = {}
     @measurements.each do |measurement|
-      data_block[measurement.site_id] ||= {}
-      data_block[measurement.site_id]["#{measurement.measure_date.to_time}"] = measurement.water_level.to_i
+      data_block[measurement.site_id] ||= []
+      data_block[measurement.site_id] << {
+        measureDate: measurement.measure_date,
+        siteId: measurement.site_id,
+        waterLevel: measurement.water_level
+      }
     end
     render json: data_block
   end
