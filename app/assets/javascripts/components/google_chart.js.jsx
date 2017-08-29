@@ -7,7 +7,7 @@ var GoogleChart = React.createClass({
   },
 
   componentDidMount: function () {
-    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.load('current', { packages: ['corechart', 'line'] });
     google.charts.setOnLoadCallback(this.drawChart);
   },
 

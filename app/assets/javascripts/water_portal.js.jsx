@@ -12,7 +12,7 @@ $(document).on('ready', function () {
         configuration: {
           topLeft: 'selectMap',
           topBottomRight: 'selectManager',
-          bottomLeft: 'graph',
+          bottomLeft: 'd3Chart',
         },
       };
     },
@@ -39,11 +39,14 @@ $(document).on('ready', function () {
         case 'selectMap':
           return (<SiteSelectMap className={className} />);
           break;
-        case 'graph':
+        case 'googleChart':
           return (<GoogleChart className={className} />);
           break;
         case 'selectManager':
           return (<SelectionManager className={className} />);
+          break;
+        case 'd3Chart':
+          return (<D3Chart className={className} />);
           break;
         default:
 

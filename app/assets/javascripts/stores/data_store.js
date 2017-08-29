@@ -83,7 +83,7 @@
       }
     },
 
-    seriesData: function (siteIds) {
+    seriesDataGoogle: function (siteIds) {
       var data = {
         cols: [
           { id: 'date', label: 'Measurement Date', type: 'date', color: 'red' },
@@ -104,6 +104,16 @@
       });
 
       return data;
+    },
+
+    seriesData: function (siteIds) {
+      var selectionData = {};
+      siteIds.forEach(function (id, idx) {
+        selectionData[id] = selectionData[id] || [];
+        selectionData[id] = _series[id];
+      });
+
+      return selectionData;
     },
 
     _seriesString: function (siteId) {
