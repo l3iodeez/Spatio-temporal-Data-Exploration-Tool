@@ -84,22 +84,26 @@
     },
 
     seriesData: function (siteIds) {
-      var selectionData = {};
-      siteIds.forEach(function (id) {
-        selectionData[id] = {};
-        selectionData[id].rows = [];
+      var data = {
+        cols: [
+          { id: 'date', label: 'Measurement Date', type: 'datetime' },
+        ],
+        rows: [],
+      };
+      siteIds.forEach(function (id, idx) {
+        data.cols.push({ id: String(id), label: _sites[id].site_name, type: 'number' });
+      });
+
+      siteIds.forEach(function (id, idx) {
         _series[id].forEach(function (seriesData) {
-          selectionData[id].rows.push(
-            { c: [
-              { v: new Date(seriesData.measureDate) },
-              { v: parseFloat(seriesData.waterLevel, 10) },
-              { v: seriesData.siteId },
-            ], },
-          );
+          var dataRow = new Array(siteIds.length + 1).fill({ v: null });
+          dataRow[0] = { v: new Date(seriesData.measureDate) };
+          dataRow[idx + 1] = { v: parseFloat(seriesData.waterLevel, 10) };
+          data.rows.push({ c: dataRow });
         });
       });
 
-      return selectionData;
+      return data;
     },
 
     _seriesString: function (siteId) {
