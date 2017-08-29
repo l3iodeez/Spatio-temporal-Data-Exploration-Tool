@@ -2,6 +2,7 @@ var GoogleChart = React.createClass({
   getInitialState: function () {
     return {
       series: [],
+      filters: {},
     };
   },
 
@@ -13,7 +14,9 @@ var GoogleChart = React.createClass({
   drawChart: function () {
     var chart;
     if (!this.state.chart) {
-      chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+      chart = new google.visualization.LineChart(
+        document.getElementById('chart_div-' + this.props.className.split(' ').join(''))
+      );
       this.setState({
         chart: chart,
       }, this.drawChart);
@@ -28,22 +31,11 @@ var GoogleChart = React.createClass({
         isHtml: true,
       },
       title: 'Water Levels',
-      colors: ['black', 'blue', 'red', 'green', 'yellow', 'gray'],
-      hAxis: {
-        title: 'Measure Date',
-        slantedText: false,
-        slantedTextAngle: 45,
-        textStyle: {
-          fontSize: 10,
-        },
-        format: 'dd-MM-yyyy',
-      },
-      chartArea: {
-        left: 50,
-        top: 20,
-      },
       trendlines: {},
-      explorer: { keepInBounds: true },
+      pointShape: 'circle',
+      lineWidth: 1,
+      pointSize: 1,
+      explorer: {},
     };
     if (this.state.series.cols) {
       for (var i = 0; i < this.state.series.cols.length; i++) {
@@ -52,13 +44,6 @@ var GoogleChart = React.createClass({
     }
 
     var dataTable = new google.visualization.DataTable(this.state.series);
-    var measureDate = function (date) {
-      return new Date(date.getYear(), date.getMonth(), date.getDate());
-    };
-
-    var noModifier = function (el) {
-      return el;
-    };
 
     chart.draw(dataTable, options);
 
@@ -74,8 +59,11 @@ var GoogleChart = React.createClass({
 
   render: function () {
     return (
-      <div className='graph-container'>
-        <div id='chart_div' style={{ width: '100%', height: '100%' }}></div>
+      <div className='graph'>
+        <div
+          id={'chart_div-' + this.props.className.split(' ').join('')}
+          style={{ width: '100%', height: '100%' }}>
+        </div>
         <button onClick={this.requestData}>FetchSelected</button>
       </div>
     );

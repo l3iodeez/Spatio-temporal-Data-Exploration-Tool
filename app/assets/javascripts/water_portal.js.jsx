@@ -9,7 +9,11 @@ $(document).on('ready', function () {
 
     getInitialState: function () {
       return {
-
+        configuration: {
+          topLeft: 'selectMap',
+          topBottomRight: 'selectManager',
+          bottomLeft: 'graph',
+        },
       };
     },
 
@@ -30,13 +34,34 @@ $(document).on('ready', function () {
 
     },
 
+    renderComponentByType: function (type, className) {
+      switch (type) {
+        case 'selectMap':
+          return (<SiteSelectMap className={className} />);
+          break;
+        case 'graph':
+          return (<GoogleChart className={className} />);
+          break;
+        case 'selectManager':
+          return (<SelectionManager className={className} />);
+          break;
+        default:
+
+      }
+    },
+
     render: function () {
 
       return (
         <div id='app' className='app group'>
-          <div className='map container top left'><SiteSelectMap /></div>
-          <div className='selector container top right'></div>
-          <div className='graph container bottom'><GoogleChart /></div>
+          {Object.keys(this.state.configuration).map(function (key) {
+            var className = 'container ' + key.split(/(?=[A-Z])/).join(' ').toLowerCase();
+            return (
+              <div key={className} className={ className }>
+                {this.renderComponentByType(this.state.configuration[key], className)}
+              </div>
+            );
+          }.bind(this))}
         </div>
       );
     },

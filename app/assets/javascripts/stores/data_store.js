@@ -86,7 +86,7 @@
     seriesData: function (siteIds) {
       var data = {
         cols: [
-          { id: 'date', label: 'Measurement Date', type: 'datetime' },
+          { id: 'date', label: 'Measurement Date', type: 'date', color: 'red' },
         ],
         rows: [],
       };

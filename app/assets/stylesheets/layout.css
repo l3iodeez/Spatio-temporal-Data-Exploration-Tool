@@ -9,29 +9,31 @@
 
 .container {
   position: absolute;
-  border: 1px solid black;
+
+  top: 50%;
+  bottom: 50%;
+  left: 50%;
+  right: 50%;
 }
 
 .container.top {
   top: 0;
-  bottom: 50%;
-  border-bottom: 0;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .container.bottom {
   bottom: 0;
-  top: 50%;
-  right: 0;
-  left: 0;
+  border-bottom: 1px solid black;
 }
 
 .container.right {
   right: 0;
-  left: 50%;
-  border-left: 0;
+  border-right: 1px solid black;
 }
 
 .container.left {
   left: 0;
-  right: 50%;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
 }

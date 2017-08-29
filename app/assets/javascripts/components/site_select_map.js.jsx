@@ -23,7 +23,7 @@ var SiteSelectMap = React.createClass({
 
   loadMap: function () {
     this.setState({
-      map: new google.maps.Map(document.getElementById('map_canvas'), {
+      map: new google.maps.Map(document.getElementById('map_canvas-' + this.props.className.split(' ').join('')), {
         center: { lat: 37.945, lng: -97.648, },
         zoom: 4,
       }),
@@ -174,9 +174,20 @@ var SiteSelectMap = React.createClass({
 
   render: function () {
     return (
-      <div
-        id="map_canvas"
-        style={{ height: '100%', width: '100%' }}>
+      <div style={{ height: '100%', width: '100%' }}>
+        <div className='filter-pane'>
+          <ul>
+            <li>
+              <input
+                type='date'
+                />
+            </li>
+          </ul>
+        </div>
+        <div
+          id={'map_canvas-' + this.props.className.split(' ').join('')}
+          style={{ height: '90%', width: '100%' }}>
+        </div>
       </div>
     );
   },

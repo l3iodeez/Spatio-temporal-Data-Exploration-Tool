@@ -1,16 +1,21 @@
-.graph-container {
+.graph {
   width: 100%;
   height: 90%;
 }
 
-.graph-container div {
+.graph div {
   height: 100px;
+
+}
+div.graph {
+  position: absolute;
+  bottom: 0;
 }
 
-.graph-container button {
-  height: 10%;
+.graph button {
+  height: 20px;
   position: absolute;
-  top: 0;
   left: 0;
+  top: -20px;
   z-index: 10;
 }

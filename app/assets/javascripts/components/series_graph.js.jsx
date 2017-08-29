@@ -19,7 +19,7 @@ var SeriesGraph = React.createClass({
 
   render: function () {
     return (
-      <div className='graph-container'>
+      <div className='graph'>
         <div >
           <LineChart data={this.state.series} />
         </div>
