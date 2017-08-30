@@ -12,9 +12,9 @@ class Api::SitesController < ApplicationController
     @measurements.each do |measurement|
       data_block[measurement.site_id] ||= []
       data_block[measurement.site_id] << {
-        measureDate: measurement.measure_date,
+        measureDate: measurement.measure_date.to_time.utc.to_i*1000,
         siteId: measurement.site_id,
-        waterLevel: measurement.water_level
+        waterLevel: measurement.water_level.to_f
       }
     end
     render json: data_block
@@ -25,12 +25,11 @@ class Api::SitesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
   def set_site
     @site = Site.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def site_params
     params.require(:site).permit(:city, :state, :zip, :measure_count)
   end

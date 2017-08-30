@@ -10,8 +10,8 @@
 .container {
   position: absolute;
 
-  top: 50%;
-  bottom: 50%;
+  top: 10%;
+  bottom: 90%;
   left: 50%;
   right: 50%;
 }

@@ -36,7 +36,11 @@
       this._sitesChanged();
     },
 
-    siteMetaData: function () {
+    siteMetaData: function (siteId) {
+      if (siteId) {
+        return _sites[siteId];
+      }
+
       return _sites;
     },
 
@@ -56,6 +60,13 @@
     },
 
     storeSeriesData: function (series) {
+      Object.keys(series).forEach(function (siteId) {
+        series[siteId].forEach(function (dataPoint) {
+          dataPoint.measureDate = new Date(dataPoint.measureDate);
+          dataPoint.waterLevel = parseFloat(dataPoint.waterLevel, 10);
+        });
+      });
+
       $.extend(_series, series);
 
       this._seriesChanged(this.toPull);
@@ -66,7 +77,7 @@
       this.emit(SiteConstants.EVENTS.SERIES_DATA_CHANGE, pullIds);
     },
 
-    loadSeries: function (siteIds, callback) {
+    loadSeries: function (siteIds, callback, google) {
 
       var pullIds = [];
       siteIds.forEach(function (id) {
@@ -77,7 +88,11 @@
 
       this.toPull = pullIds.slice(0);
       if (pullIds.length === 0) {
-        callback(this.seriesData(siteIds));
+        if (google) {
+          callback(this.seriesDataGoogle(siteIds));
+        } else {
+          callback(this.seriesData(siteIds));
+        }
       } else {
         SitesAPIUtil.fetchSeriesData(pullIds, callback, siteIds);
       }

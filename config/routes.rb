@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
    root 'static_pages#root'
+   get 'd3test' => 'static_pages#advanced_d3_test'
+   get 'data.tsv' => 'static_pages#data'
   # get 'geocode' => 'sites#geocode_all'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

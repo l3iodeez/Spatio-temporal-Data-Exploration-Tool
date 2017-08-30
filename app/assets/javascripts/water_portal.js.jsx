@@ -11,8 +11,10 @@ $(document).on('ready', function () {
       return {
         configuration: {
           topLeft: 'selectMap',
-          topBottomRight: 'selectManager',
-          bottomLeft: 'd3Chart',
+
+          // topRight: 'selectManager',
+          topRight: 'd3Chart',
+          bottomLeftRight: 'advancedD3Chart',
         },
       };
     },
@@ -48,6 +50,9 @@ $(document).on('ready', function () {
         case 'd3Chart':
           return (<D3Chart className={className} />);
           break;
+        case 'advancedD3Chart':
+          return (<AdvancedD3Chart className={className} />);
+          break;
         default:
 
       }
@@ -60,7 +65,7 @@ $(document).on('ready', function () {
           {Object.keys(this.state.configuration).map(function (key) {
             var className = 'container ' + key.split(/(?=[A-Z])/).join(' ').toLowerCase();
             return (
-              <div key={className} className={ className }>
+              <div id={className.split(' ').join('')} key={className} className={ className }>
                 {this.renderComponentByType(this.state.configuration[key], className)}
               </div>
             );
