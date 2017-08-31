@@ -1,10 +1,9 @@
 .graph {
   width: 100%;
-  height: 90%;
+  height: 100%;
 }
 
 .graph div {
-  height: 100px;
 
 }
 div.graph {
@@ -16,6 +15,6 @@ div.graph {
   height: 20px;
   position: absolute;
   left: 0;
-  top: -20px;
+  top: 0;
   z-index: 10;
 }
