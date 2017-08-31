@@ -17,11 +17,11 @@ var AdvancedD3Chart = React.createClass({
     }
 
     var $container = $('#' + this.props.className.split(' ').join(''));
-    var margin = { top: 50, right: 250, bottom: 100, left: 50 };
-    var margin2 = { top: 430, right: 60, bottom: 20, left: 40 };
+    var margin = { top: 20, right: $container.width() / 4, bottom: 100, left: 50 };
+    var margin2 = { top: 40, right: 10, bottom: 275, left: 40 };
     var width = $container.width() - margin.left - margin.right;
-    var height = 530 - margin.top - margin.bottom;
-    var height2 = 500 - margin2.top - margin2.bottom;
+    var height = 330 - margin.top - margin.bottom;
+    var height2 = 350 - margin2.top - margin2.bottom;
 
     var parseDate = d3.time.format('%Y%m%d').parse;
     var bisectDate = d3.bisector(function (d) { return d.date; }).left;
@@ -78,7 +78,7 @@ var AdvancedD3Chart = React.createClass({
     //for slider part
 
     var context = svg.append('g') // Brushing context box container
-        .attr('transform', 'translate(' + 0 + ',' + 410 + ')')
+        .attr('transform', 'translate(' + 0 + ',' + 250 + ')')
         .attr('class', 'context');
 
     //append clip path for lines plotted, hiding those part out of bounds
@@ -130,6 +130,9 @@ var AdvancedD3Chart = React.createClass({
 
               // If d.visible is true then draw line for this d selection
             });
+
+        this.drawTrendLine(svg, xScale, yScale); //redraw trendline
+
       }.bind(this));
     }
 
@@ -203,7 +206,9 @@ var AdvancedD3Chart = React.createClass({
         .attr('clip-path', 'url(#clip)')//use clip path to make irrelevant part invisible
         .style('stroke', function (d) { return color(d.name); });
 
-    var legendSpace = 450 / this.state.series.length; // 450/number of issues (ex. 40)
+    var legendSpace = Math.min(Math.max(350 / this.state.series.length, 5), 25);
+
+    // 450/number of issues (ex. 40)
 
     issue.append('rect')
         .attr('width', 10)
@@ -219,6 +224,7 @@ var AdvancedD3Chart = React.createClass({
 
         .on('click', function (d) { // On click make d.visible
           d.visible = !d.visible;
+          this.drawTrendLine(svg, xScale, yScale);
 
           // If array key for this data selection is "visible" = true
           // then make it false, if false then make it true
@@ -298,6 +304,8 @@ var AdvancedD3Chart = React.createClass({
     var columnNames = d3.keys(data[0]) //grab the key values from your first data row
                                        //these are the same as your column names
                     .slice(1); //remove the first column name (`date`);
+    // Draw overall trendline
+    this.drawTrendLine(svg, xScale, yScale);
 
     function mousemove() {
       var mouseX = d3.mouse(event.target)[0]; // Finding mouse x position on rect
@@ -336,6 +344,7 @@ var AdvancedD3Chart = React.createClass({
       position.*/
       var d0 = data[i - 1];
       var d1 = data[i];
+      d1 =  d1 || d0;
       /*d0 is the combination of date and rating that is in the data array at the index
        to the left of the cursor and d1 is the combination of date and close that is in
        the data array at the index to the right of the cursor. In other words we now have
@@ -462,11 +471,94 @@ var AdvancedD3Chart = React.createClass({
     return d3.min(minYValues);
   },
 
+  drawTrendLine: function (svg, xScale, yScale) {
+    svg.selectAll('.trendline').remove();
+    svg.selectAll('.trendline-text-label').remove();
+
+    var xLabels = [].concat.apply([], this.state.series.map(function (s) {
+      if (s.visible) {
+        return s.values.map(function (d) {
+          return d.measureDate;
+        });
+      }
+    })).filter(function (e) {if (e) {return true;} });
+
+    var xSeries = d3.range(1, xLabels.length + 1);
+    var ySeries = [].concat.apply([], this.state.series.map(function (s) {
+      if (s.visible) {
+        return s.values.map(function (d) {
+          return d.waterLevel;
+        });
+      }
+    })).filter(function (e) {if (e) {return true;} });
+
+    var leastSquaresCoeff = this.leastSquares(xSeries, ySeries);
+
+    // apply the reults of the least squares regression
+    var x1 = xLabels[0];
+    var y1 = leastSquaresCoeff[0] + leastSquaresCoeff[1];
+    var x2 = xLabels[xLabels.length - 1];
+    var y2 = leastSquaresCoeff[0] * xSeries.length + leastSquaresCoeff[1];
+    var trendData = [[x1, y1, x2, y2]];
+    var decimalFormat = d3.format('0.2f');
+
+    var trendline = svg.selectAll('.trendline')
+      .data(trendData);
+
+    trendline.enter()
+      .append('line')
+      .attr('class', 'trendline')
+      .attr('x1', xScale(this.findMinX()))
+      .attr('y1', function (d) { return yScale(d[1]); })
+      .attr('x2', xScale(this.findMaxX()))
+      .attr('y2', function (d) { return yScale(d[3]); })
+      .attr('stroke', 'black')
+      .attr('stroke-width', 3);
+
+    // display equation on the chart
+    svg.append('text')
+      .text('eq: ' + decimalFormat(leastSquaresCoeff[0]) + 'x + ' +
+        decimalFormat(leastSquaresCoeff[1]))
+      .attr('class', 'trendline-text-label')
+      .attr('x', 150)
+      .attr('y', 30);
+
+    // display r-square on the chart
+    svg.append('text')
+      .text('r-sq: ' + decimalFormat(leastSquaresCoeff[2]))
+      .attr('class', 'trendline-text-label')
+      .attr('x', 150)
+      .attr('y', 50);
+  },
+
+  leastSquares: function (xSeries, ySeries) {
+    var reduceSumFunc = function (prev, cur) { return prev + cur; };
+
+    var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
+    var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
+
+    var ssXX = xSeries.map(function (d) { return Math.pow(d - xBar, 2); })
+      .reduce(reduceSumFunc);
+
+    var ssYY = ySeries.map(function (d) { return Math.pow(d - yBar, 2); })
+      .reduce(reduceSumFunc);
+
+    var ssXY = xSeries.map(function (d, i) { return (d - xBar) * (ySeries[i] - yBar); })
+      .reduce(reduceSumFunc);
+
+    var slope = ssXY / ssXX;
+    var intercept = yBar - (xBar * slope);
+    var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
+
+    return [slope, intercept, rSquare];
+  },
+
   render: function () {
     return (
       <div id={'adv-d3-container' + this.props.className.split(' ').join('')} className='graph'>
         <div
           id={'visualisation' + this.props.className.split(' ').join('')}
+          className='d3-visualisation'
           width='100%'
           height='100%'
          />

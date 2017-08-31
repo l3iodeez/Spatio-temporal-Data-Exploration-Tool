@@ -11,10 +11,8 @@ $(document).on('ready', function () {
       return {
         configuration: {
           topLeft: 'selectMap',
-
-          // topRight: 'selectManager',
-          topRight: 'd3Chart',
-          bottomLeftRight: 'advancedD3Chart',
+          topRight: 'selectManager',
+          bottomLeft: 'advancedD3Chart',
         },
       };
     },
