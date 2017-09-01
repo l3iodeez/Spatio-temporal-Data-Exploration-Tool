@@ -1,9 +1,14 @@
 (function (root) {
   'use strict';
   var _selectedSites = new WaterData.IdStore;
+  var _savedSelections = {};
   var _heldKeys = new WaterData.IdStore;
 
-  var EVENTS = [StateConstants.EVENTS.SITE_SELECT_CHANGE, StateConstants.EVENTS.HELD_KEYS_CHANGE];
+  var EVENTS = [
+    StateConstants.EVENTS.SITE_SELECT_CHANGE,
+    StateConstants.EVENTS.HELD_KEYS_CHANGE,
+    StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED,
+  ];
 
   root.StateStore = $.extend({}, EventEmitter.prototype, {
 
@@ -85,6 +90,30 @@
 
     _keysChanged: function (keyId, changeType) {
       this.emit(StateConstants.EVENTS.HELD_KEYS_CHANGE, keyId, changeType);
+    },
+
+    saveSelection: function (siteIds, name) {
+      if (!siteIds) {
+        return;
+      }
+
+      _savedSelections[name] = siteIds;
+      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED, _savedSelections);
+    },
+
+    savedSelections: function () {
+      return _savedSelections;
+    },
+
+    loadSelection: function (ids) {
+      var removedIds = _selectedSites.selectedIds().slice(0);
+      _selectedSites.loadSelection(ids);
+      this._selectionChanged(ids, removedIds);
+    },
+
+    deleteSavedSelection: function (name) {
+      delete _savedSelections[name];
+      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED, _savedSelections);
     },
   });
 

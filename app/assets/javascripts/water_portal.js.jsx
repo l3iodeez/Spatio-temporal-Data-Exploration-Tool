@@ -13,6 +13,7 @@ $(document).on('ready', function () {
           topLeft: 'selectMap',
           topRight: 'selectManager',
           bottomLeft: 'advancedD3Chart',
+          bottomRight: 'advancedD3Chart',
         },
       };
     },

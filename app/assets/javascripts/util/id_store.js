@@ -48,4 +48,12 @@
       return this.locationOf(element, array, start, pivot);
     }
   };
+
+  WaterData.IdStore.prototype.loadSelection = function (ids) {
+    this._selected = [];
+    this.ids = [];
+    ids.forEach(function (id) {
+      this.store(id);
+    }.bind(this));
+  };
 }(this));

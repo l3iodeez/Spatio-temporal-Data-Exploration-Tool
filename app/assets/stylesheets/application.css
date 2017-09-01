@@ -19,7 +19,7 @@
 
  body { font: 12px Arial;}
 
-path { 
+path {
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
@@ -31,4 +31,8 @@ path {
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
+}
+
+input {
+  border: 1px solid grey;
 }

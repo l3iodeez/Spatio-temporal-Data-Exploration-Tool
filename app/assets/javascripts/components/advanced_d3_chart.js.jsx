@@ -3,6 +3,7 @@ var AdvancedD3Chart = React.createClass({
     return {
       series: null,
       filters: {},
+      nameEntry: '',
     };
   },
 
@@ -407,7 +408,7 @@ var AdvancedD3Chart = React.createClass({
       });
   },
 
-  requestData: function () {
+  requestData: function (e) {
     SiteDataStore.loadSeries(StateStore.selectedSites(), this.loadData);
   },
 
@@ -435,6 +436,7 @@ var AdvancedD3Chart = React.createClass({
       var siteMetaData = SiteDataStore.siteMetaData(siteId);
       return {
         name: siteMetaData.site_name.replace('VW_GWDP_GEOSERVER.', ''),
+        id: siteMetaData.id,
         values: data[siteId],
         visible: true, // 'visible': all false except for economy which is true.
       };
@@ -659,6 +661,32 @@ var AdvancedD3Chart = React.createClass({
     return [slope, intercept, rSquare];
   },
 
+  visibleSites: function () {
+    if (!this.state.series) {
+      return;
+    }
+
+    return this.state.series.filter(function (el) {
+      return el.visible;
+    }).map(function (el) {
+      return el.id;
+    });
+  },
+
+  saveDisplayed: function () {
+    var usedNames = Object.keys(StateStore.savedSelections()) + [''];
+    if (usedNames.includes(this.state.nameEntry)) {
+      alert('You must use a unique name.');
+      return;
+    }
+
+    StateStore.saveSelection(this.visibleSites(), this.state.nameEntry);
+  },
+
+  updateNameEntry: function (e) {
+    this.setState({ nameEntry: e.target.value });
+  },
+
   render: function () {
     return (
       <div id={'adv-d3-container' + this.props.className.split(' ').join('')} className='graph'>
@@ -668,7 +696,13 @@ var AdvancedD3Chart = React.createClass({
           width='100%'
           height='100%'
          />
-        <button onClick={this.requestData}>FetchSelected</button>
+       <button onClick={this.requestData}>Load From Map</button>
+       <button
+         disabled={!this.state.series}
+         onClick={this.saveDisplayed}>
+         Save Displayed as:
+       </button>
+       <input type='text' onChange={this.updateNameEntry} value={this.state.nameEntry} />
       </div>
     );
   },

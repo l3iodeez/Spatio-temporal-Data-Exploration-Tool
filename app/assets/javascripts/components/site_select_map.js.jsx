@@ -22,8 +22,9 @@ var SiteSelectMap = React.createClass({
   },
 
   loadMap: function () {
+    var canvasId = 'map_canvas-' + this.props.className.split(' ').join('');
     this.setState({
-      map: new google.maps.Map(document.getElementById('map_canvas-' + this.props.className.split(' ').join('')), {
+      map: new google.maps.Map(document.getElementById(canvasId), {
         center: { lat: 37.945, lng: -97.648, },
         zoom: 4,
       }),
@@ -62,7 +63,6 @@ var SiteSelectMap = React.createClass({
   },
 
   updateMarkers: function (added, removed) {
-
     this.state.markers.forEach(function (marker) {
       if (added.includes(marker.id)) {
         marker.setIcon(SiteConstants.GCHART_LINK + 'F00|8|h|F00|b|O');

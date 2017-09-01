@@ -20,5 +20,6 @@ var StateConstants = {
     CLICK: 'click',
     SITE_SELECT_CHANGE: 'siteSelectChange',
     HELD_KEYS_CHANGE: 'heldKeysChange',
+    SAVE_SELECTION: 'saveSelection',
   },
 };
