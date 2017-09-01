@@ -11,29 +11,43 @@ var AdvancedD3Chart = React.createClass({
     google.charts.setOnLoadCallback(this.drawChart);
   },
 
+  sizes: function () {
+    var $container = $('#' + this.props.className.split(' ').join(''));
+    var margin = { top: 20, right: $container.width() / 4, bottom: 100, left: 50 };
+    var margin2 = { top: 40, right: 10, bottom: 275, left: 40 };
+    var width = $container.width() - margin.left - margin.right;
+
+    var height = 330 - margin.top - margin.bottom;
+    var height2 = 350 - margin2.top - margin2.bottom;
+    return {
+      container: $container,
+      width: width,
+      margin: margin,
+      margin2: margin2,
+      height: height,
+      height2: height2,
+      offset: 250,
+    };
+  },
+
   drawChart: function () {
     if (!this.state.series) {
       return;
     }
 
-    var $container = $('#' + this.props.className.split(' ').join(''));
-    var margin = { top: 20, right: $container.width() / 4, bottom: 100, left: 50 };
-    var margin2 = { top: 40, right: 10, bottom: 275, left: 40 };
-    var width = $container.width() - margin.left - margin.right;
-    var height = 330 - margin.top - margin.bottom;
-    var height2 = 350 - margin2.top - margin2.bottom;
+    var sizes = this.sizes();
 
     var parseDate = d3.time.format('%Y%m%d').parse;
     var bisectDate = d3.bisector(function (d) { return d.date; }).left;
 
     var xScale = d3.time.scale()
-        .range([0, width]);
+        .range([0, sizes.width]);
 
     var xScale2 = d3.time.scale()
-        .range([0, width]); // Duplicate xScale for brushing ref later
+        .range([0, sizes.width]); // Duplicate xScale for brushing ref later
 
     var yScale = d3.scale.linear()
-        .range([height, 0]);
+        .range([sizes.height, 0]);
 
     // 40 Custom DDV colors
     var color = this.color();
@@ -61,15 +75,15 @@ var AdvancedD3Chart = React.createClass({
     var maxY; // Defined later to update yAxis
     $('#visualisation'  + this.props.className.split(' ').join('')).empty();
     var svg = d3.select('#visualisation'  + this.props.className.split(' ').join('')).append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom) //height + margin.top + margin.bottom
-      .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        .attr('width', sizes.width + sizes.margin.left + sizes.margin.right)
+        .attr('height', sizes.height + sizes.margin.top + sizes.margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + sizes.margin.left + ',' + sizes.margin.top + ')');
 
     // Create invisible rect for mouse tracking
     svg.append('rect')
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', sizes.width)
+        .attr('height', sizes.height)
         .attr('x', 0)
         .attr('y', 0)
         .attr('id', 'mouse-tracker')
@@ -78,7 +92,7 @@ var AdvancedD3Chart = React.createClass({
     //for slider part
 
     var context = svg.append('g') // Brushing context box container
-        .attr('transform', 'translate(' + 0 + ',' + 250 + ')')
+        .attr('transform', 'translate(' + 0 + ',' + sizes.offset + ')')
         .attr('class', 'context');
 
     //append clip path for lines plotted, hiding those part out of bounds
@@ -86,8 +100,8 @@ var AdvancedD3Chart = React.createClass({
       .append('clipPath')
         .attr('id', 'clip')
         .append('rect')
-        .attr('width', width)
-        .attr('height', height);
+        .attr('width', sizes.width)
+        .attr('height', sizes.height);
 
     xScale.domain([this.findMinX(), this.findMaxX()]);
 
@@ -131,14 +145,14 @@ var AdvancedD3Chart = React.createClass({
               // If d.visible is true then draw line for this d selection
             });
 
-        this.drawTrendLine(svg, xScale, yScale); //redraw trendline
+        this.drawAveragedTrendline(svg, xScale, yScale); //redraw trendline
 
       }.bind(this));
     }
 
     context.append('g') // Create brushing xAxis
         .attr('class', 'x axis1')
-        .attr('transform', 'translate(0,' + height2 + ')')
+        .attr('transform', 'translate(0,' + sizes.height2 + ')')
         .call(xAxis2);
 
     var contextArea = d3.svg.area() // Set attributes for area chart in brushing context graph
@@ -146,7 +160,7 @@ var AdvancedD3Chart = React.createClass({
       .x(function (d) {
         return xScale2(d.measureDate);
       }) // x is scaled to xScale2
-      .y0(height2) // Bottom line begins at height2 (area chart not inverted)
+      .y0(sizes.height2) // Bottom line begins at height2 (area chart not inverted)
       .y1(0); // Top line of area, 0 (area chart not inverted)
 
     //plot the rect as the bar at the bottom
@@ -164,14 +178,14 @@ var AdvancedD3Chart = React.createClass({
       .attr('class', 'x brush')
       .call(brush)
       .selectAll('rect')
-      .attr('height', height2) // Make brush rects same height
+      .attr('height', sizes.height2) // Make brush rects same height
         .attr('fill', '#E6E7E8');
 
     //end slider part----------------------
     // draw line graph
     svg.append('g')
         .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
+        .attr('transform', 'translate(0,' + sizes.height + ')')
         .call(xAxis);
 
     svg.append('g')
@@ -184,8 +198,9 @@ var AdvancedD3Chart = React.createClass({
         .attr('dy', '.71em')
         .style('text-anchor', 'end')
         .text('Groundwater Level');
-
-    var issue = svg.selectAll('.issue')
+    var legend = svg.append('g')
+       .attr('class', 'legend-container');
+    var issue = legend.selectAll('.issue')
         .data(this.state.series) // Select nested data and append to new svg group elements
       .enter().append('g')
         .attr('class', 'issue');
@@ -213,7 +228,7 @@ var AdvancedD3Chart = React.createClass({
     issue.append('rect')
         .attr('width', 10)
         .attr('height', 10)
-        .attr('x', width + (margin.right / 3) - 15)
+        .attr('x', sizes.width + (sizes.margin.right / 3) - 15)
         .attr('y', function (d, i) { return (legendSpace) + i * (legendSpace) - 8; })  // spacing
         .attr('fill', function (d) {
           return d.visible ? color(d.name) : '#F1F1F2';
@@ -224,7 +239,7 @@ var AdvancedD3Chart = React.createClass({
 
         .on('click', function (d) { // On click make d.visible
           d.visible = !d.visible;
-          this.drawTrendLine(svg, xScale, yScale);
+          this.drawAveragedTrendline(svg, xScale, yScale);
 
           // If array key for this data selection is "visible" = true
           // then make it false, if false then make it true
@@ -276,7 +291,7 @@ var AdvancedD3Chart = React.createClass({
         });
 
     issue.append('text')
-        .attr('x', width + (margin.right / 3))
+        .attr('x', sizes.width + (sizes.margin.right / 3))
         .attr('y', function (d, i) { return (legendSpace) + i * (legendSpace); })
 
         // (return (11.25/2 =) 5.625) + i * (5.625)
@@ -290,22 +305,22 @@ var AdvancedD3Chart = React.createClass({
           .append('line')
               .attr('id', 'hover-line')
               .attr('x1', 10).attr('x2', 10)
-              .attr('y1', 0).attr('y2', height + 10)
+              .attr('y1', 0).attr('y2', sizes.height + 10)
               .style('pointer-events', 'none') // Stop line interferring with cursor
               .style('opacity', 1e-6); // Set opacity to zero
 
     var hoverDate = hoverLineGroup
           .append('text')
               .attr('class', 'hover-text')
-              .attr('y', height - (height - 40)) // hover date text position
-              .attr('x', width - 150) // hover date text position
+              .attr('y', sizes.height - (sizes.height - 40)) // hover date text position
+              .attr('x', sizes.width - 150) // hover date text position
               .style('fill', '#E6E7E8');
 
     var columnNames = d3.keys(data[0]) //grab the key values from your first data row
                                        //these are the same as your column names
                     .slice(1); //remove the first column name (`date`);
     // Draw overall trendline
-    this.drawTrendLine(svg, xScale, yScale);
+    this.drawAveragedTrendline(svg, xScale, yScale);
 
     function mousemove() {
       var mouseX = d3.mouse(event.target)[0]; // Finding mouse x position on rect
@@ -377,7 +392,7 @@ var AdvancedD3Chart = React.createClass({
 
     focus.append('text') // http://stackoverflow.com/questions/22064083/d3-js-multi-series-chart-with-y-value-tracking
           .attr('class', 'tooltip')
-          .attr('x', width + 20) // position tooltips
+          .attr('x', sizes.width + 20) // position tooltips
           .attr('y', function (d, i) { return (legendSpace) + i * (legendSpace); });
 
     // Add mouseover events for hover line.
@@ -419,7 +434,7 @@ var AdvancedD3Chart = React.createClass({
       // Nest the data into an array of objects with new keys
       var siteMetaData = SiteDataStore.siteMetaData(siteId);
       return {
-        name: siteMetaData.site_name, // 'name': the csv headers except date
+        name: siteMetaData.site_name.replace('VW_GWDP_GEOSERVER.', ''),
         values: data[siteId],
         visible: true, // 'visible': all false except for economy which is true.
       };
@@ -471,14 +486,97 @@ var AdvancedD3Chart = React.createClass({
     return d3.min(minYValues);
   },
 
-  drawTrendLine: function (svg, xScale, yScale) {
+  calculateTrendlines: function (svg, xScale, yScale) {
+    svg.selectAll('.trendline').remove();
+    svg.selectAll('.trendline-text-label').remove();
+    var componentTrendlines = [];
+    this.state.series.forEach(function (series) {
+      if (series.visible) {
+        var xLabels = [].concat.apply([], series.values.map(function (d) {
+          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+            return d.measureDate;
+          }
+        })).filter(function (e) {if (e) {return true;} });
+
+        var xSeries = d3.range(1, xLabels.length + 1);
+        var ySeries = [].concat.apply([], series.values.map(function (d) {
+          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+            return d.waterLevel;
+          }
+        })).filter(function (e) {if (e) {return true;} });
+
+        componentTrendlines.push(this.leastSquares(xSeries, ySeries));
+      }
+    }.bind(this));
+    return componentTrendlines;
+  },
+
+  drawAveragedTrendline: function (svg, xScale, yScale) {
+    var sizes = this.sizes();
+    try {
+      var trendlines = this.calculateTrendlines(svg, xScale, yScale);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+
+    var decimalFormat = d3.format('0.2f');
+    if (trendlines.length === 0) {
+      return;
+    }
+
+    var averagedLine = trendlines.reduce(function (a, b) {
+      return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+    }).map(function (value) {
+      return value / trendlines.length;
+    });
+
+    if (isNaN(averagedLine[0])) {
+      return;
+    }
+
+    svg.selectAll('.trendline').remove();
+    svg.selectAll('.trendline-text-label').remove();
+    var trendline = svg.selectAll('.trendline');
+
+    var run = xScale(xScale.domain()[1]) - xScale(xScale.domain()[0]);
+    var rise = run * averagedLine[0];
+    svg.append('line')
+      .attr('class', 'trendline')
+      .attr('x1', xScale(xScale.domain()[0]))
+      .attr('y1', yScale(averagedLine[1]))
+      .attr('x2', xScale(xScale.domain()[1]))
+      .attr('y2', yScale(averagedLine[1]) - rise)
+      .attr('stroke', 'black')
+      .attr('stroke-width', 3);
+
+    // display equation on the chart
+    svg.append('text')
+      .text('eq: ' + decimalFormat(averagedLine[0]) + 'x + ' +
+        decimalFormat(averagedLine[1]))
+      .attr('class', 'trendline-text-label')
+      .attr('x', (sizes.width / 2) - 100)
+      .attr('y', 240);
+
+    // display r-square on the chart
+    svg.append('text')
+      .text('r-sq: ' + decimalFormat(averagedLine[2]))
+      .attr('class', 'trendline-text-label')
+      .attr('x', (sizes.width / 2) + 50)
+      .attr('y', 240);
+  },
+
+  drawCombinedTrendLine: function (svg, xScale, yScale) {
+
     svg.selectAll('.trendline').remove();
     svg.selectAll('.trendline-text-label').remove();
 
     var xLabels = [].concat.apply([], this.state.series.map(function (s) {
       if (s.visible) {
         return s.values.map(function (d) {
-          return d.measureDate;
+          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+            return d.measureDate;
+          }
         });
       }
     })).filter(function (e) {if (e) {return true;} });
@@ -487,14 +585,22 @@ var AdvancedD3Chart = React.createClass({
     var ySeries = [].concat.apply([], this.state.series.map(function (s) {
       if (s.visible) {
         return s.values.map(function (d) {
-          return d.waterLevel;
+          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+            return d.waterLevel;
+          }
         });
       }
     })).filter(function (e) {if (e) {return true;} });
 
+    if (xSeries.length === 0 || ySeries.length === 0) {
+      return;
+    }
+
     var leastSquaresCoeff = this.leastSquares(xSeries, ySeries);
 
     // apply the reults of the least squares regression
+    var sizes = this.sizes();
+
     var x1 = xLabels[0];
     var y1 = leastSquaresCoeff[0] + leastSquaresCoeff[1];
     var x2 = xLabels[xLabels.length - 1];
@@ -508,9 +614,9 @@ var AdvancedD3Chart = React.createClass({
     trendline.enter()
       .append('line')
       .attr('class', 'trendline')
-      .attr('x1', xScale(this.findMinX()))
+      .attr('x1', function (d) { return xScale(d[0]); })
       .attr('y1', function (d) { return yScale(d[1]); })
-      .attr('x2', xScale(this.findMaxX()))
+      .attr('x2', function (d) { return xScale(d[2]); })
       .attr('y2', function (d) { return yScale(d[3]); })
       .attr('stroke', 'black')
       .attr('stroke-width', 3);
@@ -520,14 +626,14 @@ var AdvancedD3Chart = React.createClass({
       .text('eq: ' + decimalFormat(leastSquaresCoeff[0]) + 'x + ' +
         decimalFormat(leastSquaresCoeff[1]))
       .attr('class', 'trendline-text-label')
-      .attr('x', 150)
+      .attr('x', sizes.width / 2)
       .attr('y', 30);
 
     // display r-square on the chart
     svg.append('text')
       .text('r-sq: ' + decimalFormat(leastSquaresCoeff[2]))
       .attr('class', 'trendline-text-label')
-      .attr('x', 150)
+      .attr('x', sizes.width / 2)
       .attr('y', 50);
   },
 
