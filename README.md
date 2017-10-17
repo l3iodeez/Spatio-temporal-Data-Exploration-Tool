@@ -12,6 +12,15 @@ Application for displaying, analysing and retreiving water level data or any oth
 5. Enter a name and click 'Save displayed as' on a graph to save the currently visible sites as a new selection. 
 6. Enter a name and click 'Save Map Selection' to save the currently selected sites. 
 
+
+### Technology Stack
+- Ruby on Rails
+- React
+- Postgres
+- D3
+- Google Charts API
+
+
 This application is designed to display data obtained from the USGS National Water level Information System in a user friendly manner. 
 
 Created for MS Thesis project in Environmental Science by H. Dotson
