@@ -10,7 +10,6 @@ Application for displaying, analysing and retreiving water level data or any oth
 4. Click a legend entry on a graph to show/hide a line, this also controls its inclusion in the trendline. 
 5. Click the area below a graph to show data for a particular time period. This also controls the inclusion of data in the trendline. 
 5. Enter a name and click 'Save displayed as' on a graph to save the currently visible sites as a new selection. 
-6. Enter a name and click 'Save Map Selection' to save the currently selected sites. 
 
 
 ### Technology Stack
