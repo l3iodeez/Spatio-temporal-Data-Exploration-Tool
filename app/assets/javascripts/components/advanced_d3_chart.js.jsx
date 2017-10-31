@@ -494,20 +494,38 @@ var AdvancedD3Chart = React.createClass({
     var componentTrendlines = [];
     this.state.series.forEach(function (series) {
       if (series.visible) {
-        var xLabels = [].concat.apply([], series.values.map(function (d) {
+        var xSeries = [].concat.apply([], series.values.map(function (d) {
           if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
             return d.measureDate;
           }
         })).filter(function (e) {if (e) {return true;} });
 
-        var xSeries = d3.range(1, xLabels.length + 1);
         var ySeries = [].concat.apply([], series.values.map(function (d) {
           if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
             return d.waterLevel;
           }
         })).filter(function (e) {if (e) {return true;} });
 
-        componentTrendlines.push(this.leastSquares(xSeries, ySeries));
+        if (xSeries.length === 0) {
+          var firstPoint, lastPoint;
+          series.values.forEach(function (d) {
+            if (d.measureDate <= xScale.domain()[1]) {
+              firstPoint = d;
+            }
+          });
+
+          series.values.forEach(function (d) {
+            if (!lastPoint && d.measureDate >= xScale.domain()[0]) {
+              lastPoint = d;
+            }
+          });
+
+          if (!firstPoint || !lastPoint) {
+            return;
+          }
+        }
+
+        componentTrendlines.push(this.leastSquares(xSeries.map(function (d) {return d.getTime() / 1000;}), ySeries));
       }
     }.bind(this));
     return componentTrendlines;
@@ -515,12 +533,7 @@ var AdvancedD3Chart = React.createClass({
 
   drawAveragedTrendline: function (svg, xScale, yScale) {
     var sizes = this.sizes();
-    try {
-      var trendlines = this.calculateTrendlines(svg, xScale, yScale);
-    } catch (e) {
-      console.log(e);
-      return;
-    }
+    var trendlines = this.calculateTrendlines(svg, xScale, yScale);
 
     var decimalFormat = d3.format('0.2f');
     if (trendlines.length === 0) {
