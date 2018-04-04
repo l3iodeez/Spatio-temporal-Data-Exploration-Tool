@@ -4,6 +4,8 @@ var AdvancedD3Chart = React.createClass({
       series: null,
       filters: {},
       nameEntry: '',
+      filterStart: null,
+      filterEnd: null,
     };
   },
 
@@ -71,6 +73,13 @@ var AdvancedD3Chart = React.createClass({
         .y(function (d) { return yScale(d.waterLevel); })
         .defined(function (d) { return d.waterLevel; });
 
+    var extents = xScale.domain();
+
+    this.setState({
+      filterStart: new Date(Math.min.apply(null, extents)),
+      filterEnd: new Date(Math.max.apply(null, extents)),
+    });
+
     // Hiding line value defaults of 0 for missing data
 
     var maxY; // Defined later to update yAxis
@@ -119,6 +128,11 @@ var AdvancedD3Chart = React.createClass({
     function brushed() {
       return (function () {
         xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
+        var extents = brush.extent();
+        this.setState({
+          filterStart: new Date(Math.min.apply(null, extents)),
+          filterEnd: new Date(Math.max.apply(null, extents)),
+        });
 
         // If brush is empty then reset the Xscale domain to default,
         // if not then make it the brush extent
@@ -494,38 +508,46 @@ var AdvancedD3Chart = React.createClass({
     var componentTrendlines = [];
     this.state.series.forEach(function (series) {
       if (series.visible) {
+        var filterStart = this.state.filterStart || this.findMinX();
+        var filterEnd = this.state.filterEnd || this.findMaxX();
+
         var xSeries = [].concat.apply([], series.values.map(function (d) {
-          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+          if (d.measureDate >= filterStart && d.measureDate <= filterEnd) {
             return d.measureDate;
           }
-        })).filter(function (e) {if (e) {return true;} });
+        }.bind(this))).filter(function (e) {if (e) {return true;} });
 
         var ySeries = [].concat.apply([], series.values.map(function (d) {
-          if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
+          if (d.measureDate >= filterStart && d.measureDate <= filterEnd) {
             return d.waterLevel;
           }
-        })).filter(function (e) {if (e) {return true;} });
+        }.bind(this))).filter(function (e) {if (e) {return true;} });
 
         if (xSeries.length === 0) {
-          var firstPoint, lastPoint;
+          var firstPoint;
+          var lastPoint;
           series.values.forEach(function (d) {
-            if (d.measureDate <= xScale.domain()[1]) {
-              firstPoint = d;
+            if (d.measureDate <= this.state.filterEnd) {
+              firstPoint = d.measureDate;
             }
-          });
+          }.bind(this));
 
           series.values.forEach(function (d) {
-            if (!lastPoint && d.measureDate >= xScale.domain()[0]) {
-              lastPoint = d;
+            if (!lastPoint && d.measureDate >= this.state.filterStart) {
+              lastPoint = d.measureDate;
             }
-          });
+          }.bind(this));
 
           if (!firstPoint || !lastPoint) {
             return;
           }
         }
 
-        componentTrendlines.push(this.leastSquares(xSeries.map(function (d) {return d.getTime() / 1000;}), ySeries));
+        componentTrendlines.push(
+          this.leastSquares(xSeries.map(function (d) {
+            return d.getTime() / 86400000;
+          }), ySeries)
+        );
       }
     }.bind(this));
     return componentTrendlines;
@@ -553,21 +575,25 @@ var AdvancedD3Chart = React.createClass({
     svg.selectAll('.trendline').remove();
     svg.selectAll('.trendline-text-label').remove();
     var trendline = svg.selectAll('.trendline');
+    var filterStart = this.state.filterStart || this.findMinX();
+    var filterEnd = this.state.filterEnd || this.findMaxX();
 
-    var run = xScale(xScale.domain()[1]) - xScale(xScale.domain()[0]);
-    var rise = run * averagedLine[0];
+    var run = (filterEnd - filterStart) / 86400000;
+    var rise = (run * averagedLine[0]);
+    console.log(rise);
+
     svg.append('line')
       .attr('class', 'trendline')
-      .attr('x1', xScale(xScale.domain()[0]))
+      .attr('x1', xScale(this.state.filterStart))
       .attr('y1', yScale(averagedLine[1]))
-      .attr('x2', xScale(xScale.domain()[1]))
+      .attr('x2', xScale(this.state.filterEnd))
       .attr('y2', yScale(averagedLine[1]) - rise)
       .attr('stroke', 'black')
       .attr('stroke-width', 3);
 
     // display equation on the chart
     svg.append('text')
-      .text('eq: ' + decimalFormat(averagedLine[0]) + 'x + ' +
+      .text('eq: ' + averagedLine[0].toExponential(3) + 'x + ' +
         decimalFormat(averagedLine[1]))
       .attr('class', 'trendline-text-label')
       .attr('x', (sizes.width / 2) - 100)
@@ -670,7 +696,6 @@ var AdvancedD3Chart = React.createClass({
     var slope = ssXY / ssXX;
     var intercept = yBar - (xBar * slope);
     var rSquare = Math.pow(ssXY, 2) / (ssXX * ssYY);
-
     return [slope, intercept, rSquare];
   },
 
