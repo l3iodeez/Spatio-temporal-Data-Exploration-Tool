@@ -78,6 +78,8 @@ var AdvancedD3Chart = React.createClass({
     this.setState({
       filterStart: new Date(Math.min.apply(null, extents)),
       filterEnd: new Date(Math.max.apply(null, extents)),
+      xAxis: xAxis,
+      yAxis: yAxis,
     });
 
     // Hiding line value defaults of 0 for missing data
@@ -569,6 +571,7 @@ var AdvancedD3Chart = React.createClass({
     });
 
     if (isNaN(averagedLine[0])) {
+      console.log('NAN');
       return;
     }
 
@@ -577,17 +580,20 @@ var AdvancedD3Chart = React.createClass({
     var trendline = svg.selectAll('.trendline');
     var filterStart = this.state.filterStart || this.findMinX();
     var filterEnd = this.state.filterEnd || this.findMaxX();
+    // var numberOfTicks = this.state.xAxis.ticks();
+    // var tickSize = (this.state.xAxis.scale().domain()[1] - this.state.xAxis.scale().domain()[0]) / numberOfTicks;
 
-    var run = (filterEnd - filterStart) / 86400000;
+    var run = (filterEnd - filterStart) / 31536000000;
     var rise = (run * averagedLine[0]);
-    console.log(rise);
+
+    var midY = (this.state.yAxis.scale().domain()[1] - this.state.yAxis.scale().domain()[0]) / 2;
 
     svg.append('line')
       .attr('class', 'trendline')
       .attr('x1', xScale(this.state.filterStart))
-      .attr('y1', yScale(averagedLine[1]))
+      .attr('y1', yScale(midY - (rise / 2)))
       .attr('x2', xScale(this.state.filterEnd))
-      .attr('y2', yScale(averagedLine[1]) - rise)
+      .attr('y2', yScale(midY + (rise / 2)))
       .attr('stroke', 'black')
       .attr('stroke-width', 3);
 
