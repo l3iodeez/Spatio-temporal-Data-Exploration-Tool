@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SiteSerializer < ActiveModel::Serializer
   attributes :id, :measurements
   def measurements

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class CreateMeasurements < ActiveRecord::Migration
   def change
     create_table :measurements do |t|
-    	t.references :site
+      t.references :site
       t.string :site_name
       t.date :measure_date
       t.decimal :water_level

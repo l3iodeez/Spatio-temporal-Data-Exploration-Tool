@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # resources :sites
   get 'measurements/:site_id/' => 'measurements#show'
   get 'react/' => 'static_pages#root'
-  namespace :api, defaults: {format: :json} do
+  namespace :api, defaults: { format: :json } do
     get 'sites' => 'sites#api_index'
     post 'series' => 'sites#load_series_data'
     get 'search' => 'sites#search'
@@ -12,12 +14,12 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-   root 'static_pages#root'
-   get 'd3test' => 'static_pages#advanced_d3_test'
-   get 'trendline' => 'static_pages#trendline_test'
+  root 'static_pages#root'
+  get 'd3test' => 'static_pages#advanced_d3_test'
+  get 'trendline' => 'static_pages#trendline_test'
 
-   get 'data.tsv' => 'static_pages#data'
-   get 'usd_euro.csv' => 'static_pages#usd_euro'
+  get 'data.tsv' => 'static_pages#data'
+  get 'usd_euro.csv' => 'static_pages#usd_euro'
 
   # get 'geocode' => 'sites#geocode_all'
   # Example of regular route:
