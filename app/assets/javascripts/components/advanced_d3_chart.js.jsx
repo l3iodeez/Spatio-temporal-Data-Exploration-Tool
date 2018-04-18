@@ -6,6 +6,32 @@ var AdvancedD3Chart = React.createClass({
       nameEntry: '',
       filterStart: null,
       filterEnd: null,
+      timeResolution: 'tick',
+      xScale: null,
+      yScale: null,
+      svg: null,
+    };
+  },
+
+  timeResolutionOptions: function () {
+    return {
+      year: { display: 'Year', value:  function () {
+          return 31536000000;
+        },
+      },
+      month: { display: '30 Days', value: function () {
+          return 2592000000;
+        },
+      },
+      week: { display: 'Week', value: function () {
+          return 604800000;
+        },
+      },
+      day: { display: 'Day', value: function () {
+          return 86400000;
+        },
+      },
+      tick: { display: 'Chart Tick', value: this.tickSize },
     };
   },
 
@@ -31,6 +57,35 @@ var AdvancedD3Chart = React.createClass({
       height2: height2,
       offset: 250,
     };
+  },
+
+  durationDisplay: function test(milliseconds) {
+
+    var seconds = Math.floor(milliseconds / 1000);
+    var minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    var hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    var days = Math.floor(hours / 24);
+    hours = hours % 24;
+    var years = Math.floor(days / 365);
+    days = days % 365;
+    var result = `${years > 0 ? years + ' years,' : ''}`;
+    result += `${days > 0 ? days + ' days,' : ''}`;
+    result += `${hours > 0 ? hours + ' hours,' : ''}`;
+    result += `${minutes > 0 ? minutes + ' minutes,' : ''}`;
+    result += `${seconds > 0 ? seconds + ' seconds' : ''}`;
+
+    return result;
+  },
+
+  tickSize: function () {
+    if (!this.state.xAxis) {
+      return;
+    }
+
+    var numberOfTicks = this.state.xAxis.ticks();
+    return (this.state.xAxis.scale().domain()[1] - this.state.xAxis.scale().domain()[0]) / numberOfTicks;
   },
 
   drawChart: function () {
@@ -73,15 +128,6 @@ var AdvancedD3Chart = React.createClass({
         .y(function (d) { return yScale(d.waterLevel); })
         .defined(function (d) { return d.waterLevel; });
 
-    var extents = xScale.domain();
-
-    this.setState({
-      filterStart: new Date(Math.min.apply(null, extents)),
-      filterEnd: new Date(Math.max.apply(null, extents)),
-      xAxis: xAxis,
-      yAxis: yAxis,
-    });
-
     // Hiding line value defaults of 0 for missing data
 
     var maxY; // Defined later to update yAxis
@@ -120,6 +166,20 @@ var AdvancedD3Chart = React.createClass({
     yScale.domain([this.findMinY(), this.findMaxY()]);
 
     xScale2.domain(xScale.domain());
+
+    // export d3 objects to state
+
+    var extents = xScale.domain();
+
+    this.setState({
+      filterStart: new Date(Math.min.apply(null, extents)),
+      filterEnd: new Date(Math.max.apply(null, extents)),
+      xAxis: xAxis,
+      yAxis: yAxis,
+      svg: svg,
+      xScale: xScale,
+      yScale: yScale,
+    });
 
     //for slider part
 
@@ -300,7 +360,8 @@ var AdvancedD3Chart = React.createClass({
           d3.select(this)
             .transition()
             .attr('fill', function (d) {
-            return d.visible ? color(d.name) : '#F1F1F2';});
+            return d.visible ? color(d.name) : '#F1F1F2';
+          });
 
           d3.select('#line-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
             .transition()
@@ -400,7 +461,7 @@ var AdvancedD3Chart = React.createClass({
 
         return (d[columnName]);
       });
-    };
+    }
 
     var focus = issue.select('g') // create group elements to house tooltip text
         .data(columnNames) // bind each column name date to each g element
@@ -464,7 +525,8 @@ var AdvancedD3Chart = React.createClass({
     var maxXValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.max(d.values, function (dataPoint) { // Return max date value
-          return dataPoint.measureDate; });
+          return dataPoint.measureDate;
+        });
       }
     });
 
@@ -475,7 +537,8 @@ var AdvancedD3Chart = React.createClass({
     var minXValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.min(d.values, function (dataPoint) { // Return min date value
-          return dataPoint.measureDate; });
+          return dataPoint.measureDate;
+        });
       }
     });
 
@@ -486,7 +549,8 @@ var AdvancedD3Chart = React.createClass({
     var maxYValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.max(d.values, function (dataPoint) { // Return max level value
-          return dataPoint.waterLevel; });
+          return dataPoint.waterLevel;
+        });
       }
     });
 
@@ -497,7 +561,8 @@ var AdvancedD3Chart = React.createClass({
     var minYValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.min(d.values, function (dataPoint) { // Return min level value
-          return dataPoint.waterLevel; });
+          return dataPoint.waterLevel;
+        });
       }
     });
 
@@ -547,8 +612,8 @@ var AdvancedD3Chart = React.createClass({
 
         componentTrendlines.push(
           this.leastSquares(xSeries.map(function (d) {
-            return d.getTime() / 86400000;
-          }), ySeries)
+            return d.getTime() / this.timeResolutionOptions()[this.state.timeResolution].value();
+          }.bind(this)), ySeries)
         );
       }
     }.bind(this));
@@ -580,6 +645,7 @@ var AdvancedD3Chart = React.createClass({
     var trendline = svg.selectAll('.trendline');
     var filterStart = this.state.filterStart || this.findMinX();
     var filterEnd = this.state.filterEnd || this.findMaxX();
+
     // var numberOfTicks = this.state.xAxis.ticks();
     // var tickSize = (this.state.xAxis.scale().domain()[1] - this.state.xAxis.scale().domain()[0]) / numberOfTicks;
 
@@ -731,6 +797,12 @@ var AdvancedD3Chart = React.createClass({
     this.setState({ nameEntry: e.target.value });
   },
 
+  updateTimeResolution: function (e) {
+    this.setState({ timeResolution: e.target.value }, function () {
+      this.drawAveragedTrendline(this.state.svg, this.state.xScale, this.state.yScale);
+    });
+  },
+
   render: function () {
     return (
       <div id={'adv-d3-container' + this.props.className.split(' ').join('')} className='graph'>
@@ -747,6 +819,22 @@ var AdvancedD3Chart = React.createClass({
          Save Displayed as:
        </button>
        <input type='text' onChange={this.updateNameEntry} value={this.state.nameEntry} />
+       { this.state.series ? (
+         <div>
+           <select
+             value={this.state.timeResolution}
+             onChange={this.updateTimeResolution}
+             >
+             {Object.keys(this.timeResolutionOptions()).map(function (option) {
+                return (
+                  <option key={option} value={option}>{this.timeResolutionOptions()[option].display}</option>
+                );
+              }.bind(this)
+              )}
+           </select>
+           <p>Chart Tick size: {this.durationDisplay(this.tickSize())}</p>
+         </div>
+       ) : null }
       </div>
     );
   },
