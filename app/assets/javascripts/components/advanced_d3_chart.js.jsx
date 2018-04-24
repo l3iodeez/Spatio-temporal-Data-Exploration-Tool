@@ -84,8 +84,8 @@ var AdvancedD3Chart = React.createClass({
       return;
     }
 
-    var numberOfTicks = this.state.xAxis.ticks();
-    return (this.state.xAxis.scale().domain()[1] - this.state.xAxis.scale().domain()[0]) / numberOfTicks;
+    var ticks = this.state.xAxis.scale().ticks();
+    return ticks[1] - ticks[0];
   },
 
   drawChart: function () {
@@ -94,6 +94,8 @@ var AdvancedD3Chart = React.createClass({
     }
 
     var sizes = this.sizes();
+    var uniqueId = this.props.uniqueId;
+
 
     var parseDate = d3.time.format('%Y%m%d').parse;
     var bisectDate = d3.bisector(function (d) { return d.date; }).left;
@@ -286,10 +288,11 @@ var AdvancedD3Chart = React.createClass({
         .attr('class', 'line')
         .style('pointer-events', 'none') // Stop line interferring with cursor
         .attr('id', function (d) {
-          return 'line-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), '');
+
+          return 'line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), '');
 
           // Give line id of line-(insert issue name, with any spaces replaced with no spaces)
-        })
+        }.bind(this))
         .attr('d', function (d) {
           return d.visible ? line(d.values) : null;
 
@@ -301,7 +304,6 @@ var AdvancedD3Chart = React.createClass({
     var legendSpace = Math.min(Math.max(350 / this.state.series.length, 5), 25);
 
     // 450/number of issues (ex. 40)
-
     issue.append('rect')
         .attr('width', 10)
         .attr('height', 10)
@@ -350,7 +352,7 @@ var AdvancedD3Chart = React.createClass({
             .transition()
             .attr('fill', function (d) { return color(d.name); });
 
-          d3.select('#line-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
+          d3.select('#line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
             .transition()
             .style('stroke-width', 5.5);
         })
@@ -363,7 +365,7 @@ var AdvancedD3Chart = React.createClass({
             return d.visible ? color(d.name) : '#F1F1F2';
           });
 
-          d3.select('#line-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
+          d3.select('#line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
             .transition()
             .style('stroke-width', 1.5);
         });
@@ -649,7 +651,7 @@ var AdvancedD3Chart = React.createClass({
     // var numberOfTicks = this.state.xAxis.ticks();
     // var tickSize = (this.state.xAxis.scale().domain()[1] - this.state.xAxis.scale().domain()[0]) / numberOfTicks;
 
-    var run = (filterEnd - filterStart) / 31536000000;
+    var run = (filterEnd - filterStart) / this.timeResolutionOptions()[this.state.timeResolution].value();
     var rise = (run * averagedLine[0]);
 
     var midY = (this.state.yAxis.scale().domain()[1] - this.state.yAxis.scale().domain()[0]) / 2;
