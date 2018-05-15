@@ -175,15 +175,6 @@ var SiteSelectMap = React.createClass({
   render: function () {
     return (
       <div style={{ height: '100%', width: '100%' }}>
-        <div className='filter-pane'>
-          <ul>
-            <li>
-              <input
-                type='date'
-                />
-            </li>
-          </ul>
-        </div>
         <div
           id={'map_canvas-' + this.props.className.split(' ').join('')}
           style={{ height: '90%', width: '100%' }}>

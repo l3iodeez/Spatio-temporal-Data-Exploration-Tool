@@ -12,6 +12,8 @@ gem 'pry'
 gem 'pry-nav'
 gem 'puma'
 
+gem 'devise'
+
 gem 'geocoder'
 gem 'hammerjs_rails'
 gem 'jquery-ui-rails'

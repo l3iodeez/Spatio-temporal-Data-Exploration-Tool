@@ -96,8 +96,6 @@ var AdvancedD3Chart = React.createClass({
     var sizes = this.sizes();
     var uniqueId = this.props.uniqueId;
 
-
-    var parseDate = d3.time.format('%Y%m%d').parse;
     var bisectDate = d3.bisector(function (d) { return d.date; }).left;
 
     var xScale = d3.time.scale()

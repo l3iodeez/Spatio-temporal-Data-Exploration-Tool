@@ -1,0 +1,79 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "commonjs": true
+  },
+  "globals": {
+        "f52": true,
+        "ga": true,
+        "_": true,
+        "SC": true,
+        "instgrm": true,
+        "gtmDataLayer": true,
+        "grecaptcha": true,
+        "$": true,
+        "ko": true,
+        "bouncex": true,
+        "twttr": true,
+        "FB": true
+  },
+  "rules": {
+    "brace-style": [1, "1tbs", { "allowSingleLine": true }],
+    "comma-dangle": [0,"always-multiline"],
+    "no-cond-assign": [1,"except-parens"],
+    "no-console": 0,
+    "no-constant-condition": 1,
+    "no-control-regex": 1,
+    "no-debugger": 0,
+    "no-dupe-args": 1,
+    "no-dupe-keys": 1,
+    "semi": 2,
+    "no-duplicate-case": 1,
+    "no-empty-character-class": 1,
+    "no-empty": 2,
+    "no-ex-assign": 1,
+    "no-extra-boolean-cast": 1,
+    "no-extra-semi": 1,
+    "no-func-assign": 2,
+    "no-inner-declarations": [0,"functions"],
+    "no-invalid-regexp": 1,
+    "no-irregular-whitespace": 1,
+    "no-negated-in-lhs": 1,
+    "no-obj-calls": 1,
+    "no-regex-spaces": 1,
+    "no-sparse-arrays": 1,
+    "no-unreachable": 1,
+    "use-isnan": 2,
+    "valid-typeof": 1,
+    "no-unexpected-multiline": 1,
+    "no-fallthrough": 1,
+    "no-implied-eval": 2,
+    "no-octal": 1,
+    "no-redeclare": 1,
+    "no-delete-var": 1,
+    "no-undef": 0,
+    "no-unused-vars": [2, { "vars": "local" }],
+    "comma-spacing": [1,{"after":true}],
+    "func-style": [0,"declaration"],
+    "no-continue": 1,
+    "no-mixed-spaces-and-tabs": [1,"smart-tabs"],
+    "arrow-spacing": [1,{"before":true,"after":true}],
+    "no-class-assign": 1,
+    "no-const-assign": 1,
+    "no-var": 0,
+    "prefer-const": 0,
+    "prefer-spread": 0,
+    "no-bitwise": 1
+  },
+  "plugins": [
+    "react"
+  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended"]
+}
