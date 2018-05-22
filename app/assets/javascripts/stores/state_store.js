@@ -3,11 +3,13 @@
   var _selectedSites = new WaterData.IdStore;
   var _savedSelections = {};
   var _heldKeys = new WaterData.IdStore;
+  var _loginData = {};
 
   var EVENTS = [
     StateConstants.EVENTS.SITE_SELECT_CHANGE,
     StateConstants.EVENTS.HELD_KEYS_CHANGE,
-    StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED,
+    StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE,
+    StateConstants.EVENTS.LOGIN_STATE_CHANGE,
   ];
 
   root.StateStore = $.extend({}, EventEmitter.prototype, {
@@ -98,7 +100,7 @@
       }
 
       _savedSelections[name] = siteIds;
-      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED, _savedSelections);
+      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
     },
 
     savedSelections: function () {
@@ -113,8 +115,23 @@
 
     deleteSavedSelection: function (name) {
       delete _savedSelections[name];
-      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED, _savedSelections);
+      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
     },
+
+    loginData: function () {
+      return _loginData;
+    },
+
+    updateLoginState: function (loginData) {
+      _loginData = loginData;
+      this.emit(StateConstants.EVENTS.LOGIN_STATE_CHANGE, _loginData);
+    },
+
+    dispatcherId: AppDispatcher.register(function (payload) {
+      if (payload.actionType === StateConstants.LOGIN_STATE_CHANGE) {
+        updateLoginState(payload.loginData);
+      }
+    }),
   });
 
 }(this));

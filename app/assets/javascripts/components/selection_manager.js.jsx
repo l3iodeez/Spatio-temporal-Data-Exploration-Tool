@@ -9,7 +9,7 @@ var SelectionManager = React.createClass({
 
   componentDidMount: function () {
     StateStore.addChangeListener(
-      StateConstants.EVENTS.SAVED_SELECTIONS_CHANGED,
+      StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE,
       this.updateList
     );
     this.updateList();

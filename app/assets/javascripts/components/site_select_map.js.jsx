@@ -12,7 +12,7 @@ var SiteSelectMap = React.createClass({
     SiteDataStore.addChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
-    SitesAPIUtil.fetchSiteMetadata();
+    ApiUtil.fetchSiteMetadata();
   },
 
   componentWillUnmount: function () {

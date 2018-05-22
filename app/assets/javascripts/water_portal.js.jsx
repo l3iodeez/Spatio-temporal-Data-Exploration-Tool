@@ -60,15 +60,18 @@ $(document).on('ready', function () {
     render: function () {
 
       return (
-        <div id='app' className='app group'>
-          {Object.keys(this.state.configuration).map(function (key) {
-            var className = 'container ' + key.split(/(?=[A-Z])/).join(' ').toLowerCase();
-            return (
-              <div id={className.split(' ').join('')} key={className} className={ className }>
-                {this.renderComponentByType(this.state.configuration[key], className, key)}
-              </div>
-            );
-          }.bind(this))}
+        <div>
+          {<LoginBar />}
+          <div id='app' className='app group'>
+            {Object.keys(this.state.configuration).map(function (key) {
+              var className = 'container ' + key.split(/(?=[A-Z])/).join(' ').toLowerCase();
+              return (
+                <div id={className.split(' ').join('')} key={className} className={ className }>
+                  {this.renderComponentByType(this.state.configuration[key], className, key)}
+                </div>
+              );
+            }.bind(this))}
+          </div>
         </div>
       );
     },

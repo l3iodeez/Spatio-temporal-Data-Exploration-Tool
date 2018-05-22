@@ -30,7 +30,7 @@ class Site < ActiveRecord::Base
       next if site.address
       site.update(id: site.id)
       count += 1
-      sleep(2) if count % 3 == 0
+      sleep(2) if (count % 3).zero?
     end
     p "#{count} sites have been successfully geocoded."
   end

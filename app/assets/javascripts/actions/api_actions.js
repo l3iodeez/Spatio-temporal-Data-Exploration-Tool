@@ -15,5 +15,12 @@
         series: series,
       });
     },
+
+    loginStateChange: function (loginData) {
+      AppDispatcher.dispatch({
+        actionType: StateConstants.LOGIN_STATE_CHANGE,
+        loginData: loginData,
+      });
+    },
   };
 }(this));

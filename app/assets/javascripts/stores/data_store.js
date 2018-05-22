@@ -94,7 +94,7 @@
           callback(this.seriesData(siteIds));
         }
       } else {
-        SitesAPIUtil.fetchSeriesData(pullIds, callback, siteIds);
+        ApiUtil.fetchSeriesData(pullIds, callback, siteIds);
       }
     },
 

@@ -37,3 +37,10 @@
   border-left: 1px solid black;
   border-right: 1px solid black;
 }
+
+
+.login-bar {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
