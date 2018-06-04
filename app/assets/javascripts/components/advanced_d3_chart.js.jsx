@@ -594,7 +594,7 @@ var AdvancedD3Chart = React.createClass({
           var firstPoint;
           var lastPoint;
           series.values.forEach(function (d) {
-            if (d.measureDate <= this.state.filterEnd) {
+            if (!firstPoint && d.measureDate <= this.state.filterEnd) {
               firstPoint = d.measureDate;
             }
           }.bind(this));
@@ -629,7 +629,9 @@ var AdvancedD3Chart = React.createClass({
       return;
     }
 
-    var averagedLine = trendlines.reduce(function (a, b) {
+    var averagedLine = trendlines.filter(function (line) {
+      return !isNaN(line[0]);
+    }).reduce(function (a, b) {
       return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
     }).map(function (value) {
       return value / trendlines.length;
