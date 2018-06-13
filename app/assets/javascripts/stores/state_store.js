@@ -129,7 +129,7 @@
 
     dispatcherId: AppDispatcher.register(function (payload) {
       if (payload.actionType === StateConstants.LOGIN_STATE_CHANGE) {
-        updateLoginState(payload.loginData);
+        StateStore.updateLoginState(payload.loginData);
       }
     }),
   });

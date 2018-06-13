@@ -36,13 +36,22 @@
         url: '/users/sign_in',
         method: 'POST',
         data: {
-          email: email,
-          password: password,
+          user: {
+            email: email,
+            password: password,
+          },
           remember_me: true,
           authenticity_token: $("meta[name='csrf-token']").attr('content'),
         },
         dataType: 'json',
         success: function (data) {
+          ApiActions.loginStateChange(data);
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+        },
+
+        fail: function (data) {
           ApiActions.loginStateChange(data);
           if (typeof callback === 'function') {
             callback(data);
@@ -55,10 +64,10 @@
       $.ajax({
         url: '/users/sign_out',
         method: 'DELETE',
-        success: function (data) {
-          ApiActions.loginStateChange(data);
+        success: function () {
+          ApiActions.loginStateChange({});
           if (typeof callback === 'function') {
-            callback(data);
+            callback();
           }
         },
       });

@@ -36,3 +36,7 @@ path {
 input {
   border: 1px solid grey;
 }
+
+span.error {
+  color: red;
+}

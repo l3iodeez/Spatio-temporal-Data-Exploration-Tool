@@ -2,19 +2,14 @@
 
 # app/controllers/sessions_controller.rb
 class SessionsController < Devise::SessionsController
-
   def create
-    binding.pry
-    super
-  end
-  def sign_in_and_redirect(resource_or_scope, resource = nil)
-    scope = Devise::Mapping.find_scope!(resource_or_scope)
-    resource ||= resource_or_scope
-    sign_in(scope, resource) unless warden.user(scope) == resource
-    render json: { success: true }
-  end
+    user = User.find_for_authentication(email: params[:user][:email])
 
-  def failure
-    render json: { success: false, errors: ['Login failed.'] }
+    if user&.valid_password?(params[:user][:password])
+      sign_in(user)
+      render json: { success: true }
+    else
+      render json: { success: false, errors: ['Login failed.'] }
+    end
   end
 end

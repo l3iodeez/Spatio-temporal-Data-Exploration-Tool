@@ -1,23 +1,20 @@
 var LoginBar = React.createClass({
 
   getInitialState: function () {
-    var loginData =  StateStore.loginData()
+    var loginData =  StateStore.loginData();
     return {
       email: WP.waterPortal.loggedInEmail || loginData.email,
       password: '',
       signedIn: Boolean(WP.waterPortal.loggedInEmail),
-    }
-  },
-
-  componentDidMount(){
-    StateStore.addChangeListener(StateConstants.EVENTS.LOGIN_STATE_CHANGE, this.updateLogin);
+      error: false,
+    };
   },
 
   updateField(fieldName) {
     return function (event) {
-      var newState = {};
-      newState[fieldName] = event.target.value
-      this.setState(newState)
+      var newState = { error: false };
+      newState[fieldName] = event.target.value;
+      this.setState(newState);
     }.bind(this);
 
   },
@@ -30,8 +27,26 @@ var LoginBar = React.createClass({
     ApiUtil.signOut(this.handleSignOut);
   },
 
-  updateLogin(){
-    debugger;
+  handleSignIn(response) {
+    if (response.success) {
+      this.setState({
+        password: '',
+        signedIn: true,
+      });
+    } else {
+      this.setState({
+        error: true,
+        password: '',
+      });
+    }
+  },
+
+  handleSignOut() {
+    this.setState({
+      email: '',
+      password: '',
+      signedIn: false,
+    });
   },
 
   render: function () {
@@ -45,14 +60,19 @@ var LoginBar = React.createClass({
     } else {
       return (
         <div className='login-bar'>
+          <span className='error'>{this.state.error ? 'Invalid login' : null }</span>
           <input
             type='text'
+            id='user_email'
+            name='user[email]'
             value={this.state.email}
             onChange={this.updateField('email')}
             placeholder='Email'
             />
           <input
             type='password'
+            id='user_password'
+            name='user[password]'
             value={this.state.password}
             onChange={this.updateField('password')}
             placeholder='Password'
