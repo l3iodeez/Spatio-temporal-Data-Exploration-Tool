@@ -19,11 +19,11 @@ var LoginBar = React.createClass({
 
   },
 
-  signIn(event) {
+  signIn() {
     ApiUtil.signIn(this.state.email, this.state.password, this.handleSignIn);
   },
 
-  signOut(event) {
+  signOut() {
     ApiUtil.signOut(this.handleSignOut);
   },
 

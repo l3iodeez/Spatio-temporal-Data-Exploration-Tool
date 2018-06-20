@@ -12,6 +12,10 @@ var SelectionManager = React.createClass({
       StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE,
       this.updateList
     );
+    StateStore.addChangeListener(
+      StateConstants.EVENTS.LOGIN_STATE_CHANGE,
+      this.mergeSavedSelections
+    );
     this.updateList();
   },
 
@@ -24,6 +28,10 @@ var SelectionManager = React.createClass({
 
     StateStore.saveSelection(StateStore.selectedSites().slice(0), this.state.nameEntry);
     this.setState({ nameEntry: '' });
+  },
+
+  mergeSavedSelections: function (data) {
+    // send any existing un-persisted saved selections to the db
   },
 
   updateName: function (e) {

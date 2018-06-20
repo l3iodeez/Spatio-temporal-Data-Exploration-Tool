@@ -287,7 +287,8 @@ var AdvancedD3Chart = React.createClass({
         .style('pointer-events', 'none') // Stop line interferring with cursor
         .attr('id', function (d) {
 
-          return 'line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), '');
+          return 'line-' +
+          uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), '');
 
           // Give line id of line-(insert issue name, with any spaces replaced with no spaces)
         }.bind(this))
@@ -379,7 +380,7 @@ var AdvancedD3Chart = React.createClass({
     var hoverLineGroup = svg.append('g')
               .attr('class', 'hover-line');
 
-    var hoverLine = hoverLineGroup // Create line with basic attributes
+    hoverLineGroup // Create line with basic attributes
           .append('line')
               .attr('id', 'hover-line')
               .attr('x1', 10).attr('x2', 10)
