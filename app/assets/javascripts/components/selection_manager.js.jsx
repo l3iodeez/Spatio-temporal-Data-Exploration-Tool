@@ -2,8 +2,9 @@ var SelectionManager = React.createClass({
   getInitialState: function () {
     return {
       savedSelections: {},
-      currentSelection: [],
+      currentSelection: '',
       nameEntry: '',
+      loggedIn: Boolean(WP.waterPortal.loggedInEmail),
     };
   },
 
@@ -14,9 +15,27 @@ var SelectionManager = React.createClass({
     );
     StateStore.addChangeListener(
       StateConstants.EVENTS.LOGIN_STATE_CHANGE,
-      this.mergeSavedSelections
+      this.updateLoginState
     );
+    StateStore.addChangeListener(
+      StateConstants.EVENTS.SITE_SELECT_CHANGE,
+      this.handleSelectionChange
+    );
+    if (this.state.loggedIn) {
+      StateStore.updateSavedSelections();
+    }
+
     this.updateList();
+  },
+
+  handleSelectionChange: function (data) {
+    StateStore.selectedSites();
+    if (
+      this.state.currentSelection != '' &&
+      this.state.savedSelections[this.state.currentSelection].sort() !== StateStore.selectedSites().sort()
+    ) {
+      this.setState({ currentSelection: '' });
+    }
   },
 
   saveSelection: function () {
@@ -27,11 +46,31 @@ var SelectionManager = React.createClass({
     }
 
     StateStore.saveSelection(StateStore.selectedSites().slice(0), this.state.nameEntry);
+    if (this.state.loggedIn) {
+      ApiUtil.saveSelections([{ name: this.state.nameEntry, siteIds: StateStore.selectedSites().slice(0) }]);
+    }
+
     this.setState({ nameEntry: '' });
   },
 
-  mergeSavedSelections: function (data) {
-    // send any existing un-persisted saved selections to the db
+  updateLoginState: function (data) {
+    if (data.sucesss) {
+      this.setState({ loggedIn: data.success });
+      ApiUtil.getSavedSelections(this.mergeSavedSelections);
+    } else {
+      this.setState({
+        savedSelections: {},
+        currentSelection: '',
+        nameEntry: '',
+        loggedIn: false,
+      });
+    }
+  },
+
+  mergeSavedSelections: function () {
+    // send what we've got to the server
+    ApiUtil.saveSelections(this.state.savedSelections, StateStore.updateSavedSelections);
+
   },
 
   updateName: function (e) {

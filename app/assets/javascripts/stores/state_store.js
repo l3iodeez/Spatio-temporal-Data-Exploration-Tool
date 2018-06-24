@@ -118,6 +118,13 @@
       this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
     },
 
+    updateSavedSelections: function () {
+      ApiUtil.getSavedSelections(function (savedSelections) {
+        _savedSelections = savedSelections;
+        this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
+      }.bind(this));
+    },
+
     loginData: function () {
       return _loginData;
     },

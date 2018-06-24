@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# A single data point
 class Measurement < ActiveRecord::Base
   belongs_to :site
 

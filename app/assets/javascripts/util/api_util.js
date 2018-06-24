@@ -72,5 +72,31 @@
         },
       });
     },
+
+    getSavedSelections: function (callback) {
+      $.ajax({
+        url: '/api/saved_selections',
+        method: 'GET',
+        success: function (data) {
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+        },
+      });
+    },
+
+    saveSelections: function (selectionArray, callback) {
+      $.ajax({
+        url: '/api/save_selections',
+        method: 'POST',
+        data: { selections: selectionArray },
+        dataType: 'json',
+        success: function (data) {
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+        },
+      });
+    },
   };
 }(this));
