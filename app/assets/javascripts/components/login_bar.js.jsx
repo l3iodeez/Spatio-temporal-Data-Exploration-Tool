@@ -7,6 +7,7 @@ var LoginBar = React.createClass({
       password: '',
       signedIn: Boolean(WP.waterPortal.loggedInEmail),
       error: false,
+      authToken: $("meta[name='csrf-token']").attr('content'),
     };
   },
 
@@ -32,11 +33,14 @@ var LoginBar = React.createClass({
       this.setState({
         password: '',
         signedIn: true,
+        authToken: response.authToken,
       });
     } else {
       this.setState({
         error: true,
         password: '',
+        signedIn: false,
+        authToken: response.authToken,
       });
     }
   },

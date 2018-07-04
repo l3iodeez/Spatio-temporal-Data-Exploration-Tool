@@ -64,10 +64,10 @@
       $.ajax({
         url: '/users/sign_out',
         method: 'DELETE',
-        success: function () {
-          ApiActions.loginStateChange({});
+        success: function (data) {
+          ApiActions.loginStateChange(data);
           if (typeof callback === 'function') {
-            callback();
+            callback(data);
           }
         },
       });

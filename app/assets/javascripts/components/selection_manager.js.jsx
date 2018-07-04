@@ -55,22 +55,24 @@ var SelectionManager = React.createClass({
 
   updateLoginState: function (data) {
     if (data.sucesss) {
-      this.setState({ loggedIn: data.success });
-      ApiUtil.getSavedSelections(this.mergeSavedSelections);
-    } else {
+      this.setState({ loggedIn: data.loggedIn });
+    }
+
+    if (!data.loggedIn) {
       this.setState({
         savedSelections: {},
         currentSelection: '',
         nameEntry: '',
         loggedIn: false,
       });
+    } else {
+      ApiUtil.getSavedSelections(this.mergeSavedSelections);
     }
   },
 
   mergeSavedSelections: function () {
     // send what we've got to the server
     ApiUtil.saveSelections(this.state.savedSelections, StateStore.updateSavedSelections);
-
   },
 
   updateName: function (e) {
