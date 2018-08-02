@@ -6,8 +6,7 @@ var LoginBar = React.createClass({
       email: WP.waterPortal.loggedInEmail || loginData.email,
       password: '',
       signedIn: Boolean(WP.waterPortal.loggedInEmail),
-      error: false,
-      authToken: $("meta[name='csrf-token']").attr('content'),
+      error: false
     };
   },
 
@@ -21,35 +20,33 @@ var LoginBar = React.createClass({
   },
 
   signIn() {
-    ApiUtil.signIn(this.state.email, this.state.password, this.handleSignIn);
+    ApiUtil.signIn(this.state.email, this.state.password, StateStore.authToken(), this.handleSignIn);
   },
 
   signOut() {
-    ApiUtil.signOut(this.handleSignOut);
+    ApiUtil.signOut(StateStore.authToken(), this.handleSignOut);
   },
 
   handleSignIn(response) {
     if (response.success) {
       this.setState({
         password: '',
-        signedIn: true,
-        authToken: response.authToken,
+        signedIn: true
       });
     } else {
       this.setState({
         error: true,
         password: '',
-        signedIn: false,
-        authToken: response.authToken,
+        signedIn: false
       });
     }
   },
 
-  handleSignOut() {
+  handleSignOut(response) {
     this.setState({
       email: '',
       password: '',
-      signedIn: false,
+      signedIn: false
     });
   },
 

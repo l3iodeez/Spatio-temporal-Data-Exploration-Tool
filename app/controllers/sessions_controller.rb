@@ -14,7 +14,10 @@ class SessionsController < Devise::SessionsController
   end
 
   def destroy
-    sign_out
-    render json: { success: true, loggedIn: false }
+    if current_user
+      sign_out
+    end
+
+    render json: { success: true, loggedIn: false, authToken: form_authenticity_token }
   end
 end

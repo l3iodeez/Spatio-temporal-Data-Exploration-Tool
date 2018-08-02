@@ -12,6 +12,7 @@ var SiteSelectMap = React.createClass({
     SiteDataStore.addChangeListener(SiteConstants.EVENTS.SITE_METADATA_CHANGE, this.loadMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.SITE_SELECT_CHANGE, this.updateMarkers);
     StateStore.addChangeListener(StateConstants.EVENTS.HELD_KEYS_CHANGE, this.keyChange);
+    StateStore.addChangeListener(StateConstants.EVENTS.LOGIN_STATE_CHANGE, this.clearOnLogout);
     ApiUtil.fetchSiteMetadata();
   },
 
@@ -64,12 +65,20 @@ var SiteSelectMap = React.createClass({
 
   updateMarkers: function (added, removed) {
     this.state.markers.forEach(function (marker) {
-      if (added.includes(marker.id)) {
+      if (added && added.includes(marker.id)) {
         marker.setIcon(SiteConstants.GCHART_LINK + 'F00|8|h|F00|b|O');
-      } else if (removed.includes(marker.id)) {
+      } else if (removed && removed.includes(marker.id)) {
         marker.setIcon(SiteConstants.GCHART_LINK + '000|8|h|000|b|O');
       }
     }.bind(this));
+  },
+
+  clearOnLogout: function (loginData) {
+    if (!loginData.loggedIn) {
+      this.setState({
+        selectedSites: [],
+      })
+    }
   },
 
   mapMouseDown: function (evt) {

@@ -31,7 +31,7 @@
       });
     },
 
-    signIn: function (email, password, callback) {
+    signIn: function (email, password, authToken, callback) {
       $.ajax({
         url: '/users/sign_in',
         method: 'POST',
@@ -41,7 +41,7 @@
             password: password,
           },
           remember_me: true,
-          authenticity_token: $("meta[name='csrf-token']").attr('content'),
+          authenticity_token: authToken,
         },
         dataType: 'json',
         success: function (data) {
@@ -60,10 +60,11 @@
       });
     },
 
-    signOut: function (callback) {
+    signOut: function (authToken, callback) {
       $.ajax({
         url: '/users/sign_out',
         method: 'DELETE',
+        data: { authenticity_token: authToken },
         success: function (data) {
           ApiActions.loginStateChange(data);
           if (typeof callback === 'function') {
@@ -85,11 +86,11 @@
       });
     },
 
-    saveSelections: function (selectionArray, callback) {
+    saveSelections: function (selectionArray, authToken, callback) {
       $.ajax({
         url: '/api/save_selections',
         method: 'POST',
-        data: { selections: selectionArray },
+        data: { selections: selectionArray, authenticity_token: authToken },
         dataType: 'json',
         success: function (data) {
           if (typeof callback === 'function') {

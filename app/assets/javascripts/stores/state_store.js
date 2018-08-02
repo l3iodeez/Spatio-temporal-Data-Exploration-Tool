@@ -4,6 +4,8 @@
   var _savedSelections = {};
   var _heldKeys = new WaterData.IdStore;
   var _loginData = {};
+  var _authToken = $("meta[name='csrf-token']").attr('content');
+
 
   var EVENTS = [
     StateConstants.EVENTS.SITE_SELECT_CHANGE,
@@ -119,10 +121,23 @@
     },
 
     updateSavedSelections: function () {
-      ApiUtil.getSavedSelections(function (savedSelections) {
+      ApiUtil.getSavedSelections.bind(this)(function (savedSelections) {
         _savedSelections = savedSelections;
         this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
       }.bind(this));
+    },
+
+    logoutCleanup: function () {
+      this.emit(StateConstants.EVENTS.SITE_SELECT_CHANGE, [], _selectedSites.selectedIds());
+      _selectedSites = new WaterData.IdStore;
+      _savedSelections = {};
+      _loginData = {};
+      this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
+      this.emit(StateConstants.EVENTS.LOGIN_STATE_CHANGE, _loginData);
+    },
+
+    authToken: function () {
+      return _authToken;
     },
 
     loginData: function () {
@@ -131,12 +146,18 @@
 
     updateLoginState: function (loginData) {
       _loginData = loginData;
+      if (!loginData.loggedIn) {
+        this.logoutCleanup()
+      }
       this.emit(StateConstants.EVENTS.LOGIN_STATE_CHANGE, _loginData);
     },
 
     dispatcherId: AppDispatcher.register(function (payload) {
       if (payload.actionType === StateConstants.LOGIN_STATE_CHANGE) {
+        _authToken = payload.loginData.authToken;
         StateStore.updateLoginState(payload.loginData);
+      } else if (payload.actionType === StateConstants.SAVED_SELECTIONS_CHANGE) {
+        _authToken = payload.loginData.authToken;
       }
     }),
   });

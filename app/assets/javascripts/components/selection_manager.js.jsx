@@ -29,7 +29,6 @@ var SelectionManager = React.createClass({
   },
 
   handleSelectionChange: function (data) {
-    StateStore.selectedSites();
     if (
       this.state.currentSelection != '' &&
       this.state.savedSelections[this.state.currentSelection].sort() !== StateStore.selectedSites().sort()
@@ -47,7 +46,7 @@ var SelectionManager = React.createClass({
 
     StateStore.saveSelection(StateStore.selectedSites().slice(0), this.state.nameEntry);
     if (this.state.loggedIn) {
-      ApiUtil.saveSelections([{ name: this.state.nameEntry, siteIds: StateStore.selectedSites().slice(0) }]);
+      ApiUtil.saveSelections([{ name: this.state.nameEntry, siteIds: StateStore.selectedSites().slice(0) }], StateStore.authToken());
     }
 
     this.setState({ nameEntry: '' });
@@ -68,11 +67,13 @@ var SelectionManager = React.createClass({
     } else {
       ApiUtil.getSavedSelections(this.mergeSavedSelections);
     }
+
+    this.updateList();
   },
 
-  mergeSavedSelections: function () {
-    // send what we've got to the server
-    ApiUtil.saveSelections(this.state.savedSelections, StateStore.updateSavedSelections);
+  mergeSavedSelections: function (data) {
+    // send what we've got to the server and merge it with existing selections
+    ApiUtil.saveSelections(this.state.savedSelections, StateStore.authToken(), StateStore.updateSavedSelections.bind(StateStore));
   },
 
   updateName: function (e) {
