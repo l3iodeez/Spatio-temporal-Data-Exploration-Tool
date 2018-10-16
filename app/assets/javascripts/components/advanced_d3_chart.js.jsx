@@ -351,7 +351,8 @@ var AdvancedD3Chart = React.createClass({
             .transition()
             .attr('fill', function (d) { return color(d.name); });
 
-          d3.select('#line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
+          d3.select('#line-' +
+           uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
             .transition()
             .style('stroke-width', 5.5);
         })
@@ -364,7 +365,9 @@ var AdvancedD3Chart = React.createClass({
             return d.visible ? color(d.name) : '#F1F1F2';
           });
 
-          d3.select('#line-' + uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
+          d3.select('#line-' +
+              uniqueId + '-' +
+              d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), ''))
             .transition()
             .style('stroke-width', 1.5);
         });

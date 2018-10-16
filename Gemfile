@@ -50,6 +50,10 @@ gem 'chartkick'
 # Use statsample for statsample
 gem 'statsample'
 gem 'statsample-timeseries'
+
+# Use figaro to handle config vars
+gem 'figaro'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
