@@ -3,14 +3,13 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.1'
-ruby '2.3.1'
+gem 'rails', '4.2.10'
+ruby '2.4.4'
 # Use sqlite3 as the database for Active Record
 gem 'nokogiri'
 gem 'pg'
 gem 'pry'
 gem 'pry-nav'
-gem 'puma'
 
 gem 'devise'
 
@@ -20,7 +19,7 @@ gem 'jquery-ui-rails'
 gem 'responders'
 gem 'underscore-rails'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
@@ -57,8 +56,11 @@ gem 'figaro'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+
 # Use Unicorn as the app server
 # gem 'unicorn'
+gem 'puma'
+
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
