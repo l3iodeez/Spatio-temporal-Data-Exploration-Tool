@@ -60,6 +60,35 @@
       });
     },
 
+    signUp: function (email, password, authToken, callback) {
+      $.ajax({
+        url: '/users',
+        method: 'POST',
+        data: {
+          user: {
+            email: email,
+            password: password,
+          },
+          remember_me: true,
+          authenticity_token: authToken,
+        },
+        dataType: 'json',
+        success: function (data) {
+          ApiActions.loginStateChange(data);
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+        },
+
+        fail: function (data) {
+          ApiActions.loginStateChange(data);
+          if (typeof callback === 'function') {
+            callback(data);
+          }
+        },
+      });
+    },
+
     signOut: function (authToken, callback) {
       $.ajax({
         url: '/users/sign_out',

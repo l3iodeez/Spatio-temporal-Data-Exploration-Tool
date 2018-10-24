@@ -23,6 +23,10 @@ var LoginBar = React.createClass({
     ApiUtil.signIn(this.state.email, this.state.password, StateStore.authToken(), this.handleSignIn);
   },
 
+  signUp() {
+    ApiUtil.signUp(this.state.email, this.state.password, StateStore.authToken(), this.handleSignIn);
+  },
+
   signOut() {
     ApiUtil.signOut(StateStore.authToken(), this.handleSignOut);
   },
@@ -54,8 +58,7 @@ var LoginBar = React.createClass({
     if (this.state.signedIn) {
       return (
         <div className='login-bar'>
-          <span>Logged in as: {this.state.email}</span>
-          <a onClick={this.signOut}>Sign out</a>
+          <span>Logged in as: {this.state.email}</span> | <a onClick={this.signOut}>Sign out</a>
         </div>
       );
     } else {
@@ -78,8 +81,7 @@ var LoginBar = React.createClass({
             onChange={this.updateField('password')}
             placeholder='Password'
             />
-          <a onClick={this.signIn}>Sign In</a> |
-          <a href='/users/sign_up'>Sign up</a>
+          <a onClick={this.signIn}>Sign In</a> | <a onClick={this.signUp}>Sign up</a>
         </div>
       );
     }
