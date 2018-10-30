@@ -1,4 +1,5 @@
-<%= json_handoff 'waterPortal', {
-  :loggedInEmail => current_user&.email
+<%= json_handoff 'dataPortal', {
+  :loggedInEmail => current_user&.email,
+  :measurementName => Measurement::MEASUMENT_NAME
   } %>
 <div id="root">Please enable Javascript.</div>

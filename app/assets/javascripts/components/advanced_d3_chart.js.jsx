@@ -125,8 +125,8 @@ var AdvancedD3Chart = React.createClass({
     var line = d3.svg.line()
         .interpolate('basis')
         .x(function (d) { return xScale(d.measureDate); })
-        .y(function (d) { return yScale(d.waterLevel); })
-        .defined(function (d) { return d.waterLevel; });
+        .y(function (d) { return yScale(d.level); })
+        .defined(function (d) { return d.level; });
 
     // Hiding line value defaults of 0 for missing data
 
@@ -245,8 +245,8 @@ var AdvancedD3Chart = React.createClass({
     context.append('path') // Path is created using svg.area details
       .attr('class', 'area')
       .attr('d', contextArea([
-        { measureDate: this.findMinX(), siteId: 0, waterLevel: 0 },
-        { measureDate: this.findMaxX(), siteId: 0, waterLevel: 0 },
+        { measureDate: this.findMinX(), siteId: 0, level: 0 },
+        { measureDate: this.findMaxX(), siteId: 0, level: 0 },
       ]))
       .attr('fill', '#F1F1F2');
 
@@ -274,7 +274,7 @@ var AdvancedD3Chart = React.createClass({
         .attr('x', -10)
         .attr('dy', '.71em')
         .style('text-anchor', 'end')
-        .text('Groundwater Level');
+        .text(DP.dataPortal.measurementName);
     var legend = svg.append('g')
        .attr('class', 'legend-container');
     var issue = legend.selectAll('.issue')
@@ -553,7 +553,7 @@ var AdvancedD3Chart = React.createClass({
     var maxYValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.max(d.values, function (dataPoint) { // Return max level value
-          return dataPoint.waterLevel;
+          return dataPoint.level;
         });
       }
     });
@@ -565,7 +565,7 @@ var AdvancedD3Chart = React.createClass({
     var minYValues = this.state.series.map(function (d) {
       if (d.visible) {
         return d3.min(d.values, function (dataPoint) { // Return min level value
-          return dataPoint.waterLevel;
+          return dataPoint.level;
         });
       }
     });
@@ -590,7 +590,7 @@ var AdvancedD3Chart = React.createClass({
 
         var ySeries = [].concat.apply([], series.values.map(function (d) {
           if (d.measureDate >= filterStart && d.measureDate <= filterEnd) {
-            return d.waterLevel;
+            return d.level;
           }
         }.bind(this))).filter(function (e) {if (e) {return true;} });
 
@@ -705,7 +705,7 @@ var AdvancedD3Chart = React.createClass({
       if (s.visible) {
         return s.values.map(function (d) {
           if (d.measureDate >= xScale.domain()[0] && d.measureDate <= xScale.domain()[1]) {
-            return d.waterLevel;
+            return d.level;
           }
         });
       }

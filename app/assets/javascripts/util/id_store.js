@@ -1,23 +1,23 @@
 (function (root) {
   'use strict';
-  var WaterData = window.WaterData = window.WaterData || {};
+  var DataPortal = window.DataPortal = window.DataPortal || {};
 
-  WaterData.IdStore = function (opt) {
+  DataPortal.IdStore = function (opt) {
     this._selected = [];
     this.ids = [];
   };
 
-  WaterData.IdStore.prototype.store = function (id) {
+  DataPortal.IdStore.prototype.store = function (id) {
     this.ids[id] = true;
     this.sortedInsert(id, this._selected);
   };
 
-  WaterData.IdStore.prototype.remove = function (id) {
+  DataPortal.IdStore.prototype.remove = function (id) {
     this.ids[id] = false;
     this.sortedRemove(id, this._selected);
   };
 
-  WaterData.IdStore.prototype.isSelected = function (id) {
+  DataPortal.IdStore.prototype.isSelected = function (id) {
     if (this.ids[id]) {
       return true;
     } else {
@@ -25,19 +25,19 @@
     }
   };
 
-  WaterData.IdStore.prototype.selectedIds = function (id) {
+  DataPortal.IdStore.prototype.selectedIds = function (id) {
     return this._selected;
   };
 
-  WaterData.IdStore.prototype.sortedInsert = function (element, array) {
+  DataPortal.IdStore.prototype.sortedInsert = function (element, array) {
     array.splice(this.locationOf(element, array) + 1, 0, element);
   };
 
-  WaterData.IdStore.prototype.sortedRemove = function (element, array) {
+  DataPortal.IdStore.prototype.sortedRemove = function (element, array) {
     array.splice(this.locationOf(element, array), 1);
   };
 
-  WaterData.IdStore.prototype.locationOf = function (element, array, start, end) {
+  DataPortal.IdStore.prototype.locationOf = function (element, array, start, end) {
     start = start || 0;
     end = end || array.length;
     var pivot = parseInt(start + (end - start) / 2, 10);
@@ -49,7 +49,7 @@
     }
   };
 
-  WaterData.IdStore.prototype.loadSelection = function (ids) {
+  DataPortal.IdStore.prototype.loadSelection = function (ids) {
     this._selected = [];
     this.ids = [];
     ids.forEach(function (id) {

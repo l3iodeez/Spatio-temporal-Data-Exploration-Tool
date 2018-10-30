@@ -77,9 +77,9 @@
       };
   }
 
-  var WaterData = window.WaterData = window.WaterData || {};
+  var DataPortal = window.DataPortal = window.DataPortal || {};
 
-  WaterData.inherits = function (ChildClass, ParentClass) {
+  DataPortal.inherits = function (ChildClass, ParentClass) {
     var Surrogate = function () {};
 
     Surrogate.prototype = ParentClass.prototype;

@@ -1,4 +1,4 @@
-id,site_id,site_name,measure_date,water_level,units,measure_type,data_provider
+id,site_id,site_name,measure_date,level,units,measure_type,data_provider
 262,2,VW_GWDP_GEOSERVER.USGS.391844074451501,2000-08-09,3.5,feet,feet below land surface,National Water Information System
 263,2,VW_GWDP_GEOSERVER.USGS.391844074451501,2005-04-12,3.0,feet,feet below land surface,National Water Information System
 264,2,VW_GWDP_GEOSERVER.USGS.391844074451501,2005-05-19,2.27,feet,feet below land surface,National Water Information System

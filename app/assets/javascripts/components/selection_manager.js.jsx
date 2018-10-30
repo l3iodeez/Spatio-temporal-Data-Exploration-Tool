@@ -4,7 +4,7 @@ var SelectionManager = React.createClass({
       savedSelections: {},
       currentSelection: '',
       nameEntry: '',
-      loggedIn: Boolean(WP.waterPortal.loggedInEmail),
+      loggedIn: Boolean(DP.dataPortal.loggedInEmail),
     };
   },
 

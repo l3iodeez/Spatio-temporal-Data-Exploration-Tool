@@ -1,8 +1,8 @@
 (function (root) {
   'use strict';
-  var _selectedSites = new WaterData.IdStore;
+  var _selectedSites = new DataPortal.IdStore;
   var _savedSelections = {};
-  var _heldKeys = new WaterData.IdStore;
+  var _heldKeys = new DataPortal.IdStore;
   var _loginData = {};
   var _authToken = $("meta[name='csrf-token']").attr('content');
 
@@ -129,7 +129,7 @@
 
     logoutCleanup: function () {
       this.emit(StateConstants.EVENTS.SITE_SELECT_CHANGE, [], _selectedSites.selectedIds());
-      _selectedSites = new WaterData.IdStore;
+      _selectedSites = new DataPortal.IdStore;
       _savedSelections = {};
       _loginData = {};
       this.emit(StateConstants.EVENTS.SAVED_SELECTIONS_CHANGE, _savedSelections);
