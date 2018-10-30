@@ -2,6 +2,7 @@
 
 # A single data point
 class Measurement < ActiveRecord::Base
+  MEASUMENT_NAME = 'Water Test Level'
   belongs_to :site
 
   def self.as_csv

@@ -4,7 +4,7 @@
 
 
 
-<h1>Displaying Water level data</h1>
+<h1>Displaying <%= Measurement::MEASUMENT_NAME %> data</h1>
 
 <table>
   <thead>
@@ -57,7 +57,7 @@ var yAxis = d3.svg.axis().scale(y)
 // Define the line
 var valueline = d3.svg.line()
     .x(function(d) { return x(d.measure_date); })
-    .y(function(d) { return y(d.water_level); });
+    .y(function(d) { return y(d.level); });
 
 // Adds the svg canvas
 var svg = d3.select("body")
@@ -72,13 +72,13 @@ var svg = d3.select("body")
 d3.csv('/measurements/<%= params[:id]%>.csv', function(error, data) {
     data.forEach(function(d) {
         d.measure_date = parseDate(d.measure_date);
-        d.water_level = +d.water_level;
+        d.level = +d.level;
     });
 
     // Scale the range of the data
     x.domain(d3.extent(data, function(d) { return d.measure_date; }));
     //x.domain([parseDate("1900-01-01"),parseDate("2016-01-01"])
-    y.domain([0, d3.max(data, function(d) { return d.water_level; })]);
+    y.domain([0, d3.max(data, function(d) { return d.level; })]);
 
     // Add the valueline path.
     svg.append("path")

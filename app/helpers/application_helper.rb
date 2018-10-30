@@ -5,11 +5,11 @@ module ApplicationHelper
     <<-TEXT.html_safe
     <script>
       (function() {
-        if (typeof(WP) === 'undefined') {
-          WP = {};
+        if (typeof(DP) === 'undefined') {
+          DP = {};
         }
         var #{key} = #{ActiveSupport::JSON.encode(value)};
-        WP.#{key} = #{key};
+        DP.#{key} = #{key};
       })();
     </script>
     TEXT

@@ -63,7 +63,7 @@
       Object.keys(series).forEach(function (siteId) {
         series[siteId].forEach(function (dataPoint) {
           dataPoint.measureDate = new Date(dataPoint.measureDate);
-          dataPoint.waterLevel = parseFloat(dataPoint.waterLevel, 10);
+          dataPoint.level = parseFloat(dataPoint.level, 10);
         });
       });
 
@@ -113,7 +113,7 @@
         _series[id].forEach(function (seriesData) {
           var dataRow = new Array(siteIds.length + 1).fill({ v: null });
           dataRow[0] = { v: new Date(seriesData.measureDate) };
-          dataRow[idx + 1] = { v: parseFloat(seriesData.waterLevel, 10) };
+          dataRow[idx + 1] = { v: parseFloat(seriesData.level, 10) };
           data.rows.push({ c: dataRow });
         });
       });
@@ -134,7 +134,7 @@
     _seriesString: function (siteId) {
       var csvData = '';
       _series[siteId].forEach(function (measurement) {
-        csvData += measurement.water_level + ',' + measurement.measure_date + '\n';
+        csvData += measurement.level + ',' + measurement.measure_date + '\n';
       });
 
       return {
@@ -147,7 +147,7 @@
     _seriesObject: function (siteId) {
       var array = [];
       _series[siteId].forEach(function (measurement) {
-        array.push({ date: measurement.date, water_level: measurement.water_level });
+        array.push({ date: measurement.date, level: measurement.level });
       });
 
       return array;

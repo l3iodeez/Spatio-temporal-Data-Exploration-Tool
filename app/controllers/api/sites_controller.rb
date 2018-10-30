@@ -16,14 +16,14 @@ class Api::SitesController < ApplicationController
       data_block[measurement.site_id] << {
         measureDate: measurement.measure_date.to_time.utc.to_i * 1000,
         siteId: measurement.site_id,
-        waterLevel: measurement.water_level.to_f
+        level: measurement.level.to_f
       }
     end
     render json: data_block
   end
 
   def series_csv
-    render text: @site.measurements.pluck(:water_level).join(',')
+    render text: @site.measurements.pluck(:level).join(',')
   end
 
   private

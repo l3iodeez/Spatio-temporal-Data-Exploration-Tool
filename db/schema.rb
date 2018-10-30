@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180619235736) do
+ActiveRecord::Schema.define(version: 20181030224555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20180619235736) do
     t.integer "site_id"
     t.string  "site_name"
     t.date    "measure_date"
-    t.decimal "water_level"
+    t.decimal "level"
     t.string  "units"
     t.string  "measure_type"
     t.string  "data_provider"

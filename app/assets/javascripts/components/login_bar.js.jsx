@@ -3,9 +3,9 @@ var LoginBar = React.createClass({
   getInitialState: function () {
     var loginData =  StateStore.loginData();
     return {
-      email: WP.waterPortal.loggedInEmail || loginData.email,
+      email: DP.dataPortal.loggedInEmail || loginData.email,
       password: '',
-      signedIn: Boolean(WP.waterPortal.loggedInEmail),
+      signedIn: Boolean(DP.dataPortal.loggedInEmail),
       error: false
     };
   },

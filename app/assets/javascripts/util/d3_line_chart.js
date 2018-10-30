@@ -74,7 +74,7 @@ d3Charts.LineChart.prototype._drawLines = function (el, data) {
     series = data[key];
     this.x.domain(d3.extent(data, function (d) { return d.measure_date; }));
 
-    this.y.domain([0, d3.max(data, function (d) { return d.water_level; })]);
+    this.y.domain([0, d3.max(data, function (d) { return d.level; })]);
 
     d3.json(series, function (data) {
       return data.measure_date;
@@ -85,6 +85,6 @@ d3Charts.LineChart.prototype._drawLines = function (el, data) {
 d3Charts.LineChart.prototype._valueLine = function () {
   return d3.svg.line()
       .x(function (d) { return x(d.measure_date); })
-      .y(function (d) { return y(d.water_level); });
+      .y(function (d) { return y(d.level); });
 };
 
