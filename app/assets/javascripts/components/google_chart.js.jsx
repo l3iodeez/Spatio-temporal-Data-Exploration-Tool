@@ -26,11 +26,11 @@ var GoogleChart = React.createClass({
     }
 
     var options = {
-      title: 'Water Levels',
+      title: DP.dataPortal.measurementName,
       tooltip: {
         isHtml: true,
       },
-      title: 'Water Levels',
+      title: DP.dataPortal.measurementName,
       trendlines: {},
       pointShape: 'circle',
       lineWidth: 1,

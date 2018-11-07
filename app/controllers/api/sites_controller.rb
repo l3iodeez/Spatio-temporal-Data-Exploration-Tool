@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Api::SitesController < ApplicationController
-  before_action :set_site, only: %i[show edit update destroy series_csv]
+  before_action :set_site, only: :series_csv
 
   def api_index
-    @sites = Site.where('measure_count > 0')
+    @sites = Site.joins(:measurements).select('sites.*, count(measurements.id) measure_count').group(:id)
     render :api_index
   end
 
@@ -15,8 +15,8 @@ class Api::SitesController < ApplicationController
       data_block[measurement.site_id] ||= []
       data_block[measurement.site_id] << {
         measureDate: measurement.measure_date.to_time.utc.to_i * 1000,
-        siteId: measurement.site_id,
-        level: measurement.level.to_f
+        siteId:      measurement.site_id,
+        level:       measurement.level.to_f
       }
     end
     render json: data_block
