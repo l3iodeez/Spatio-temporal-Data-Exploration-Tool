@@ -5,12 +5,11 @@ class Site < ActiveRecord::Base
   attr_accessor :measurements_cache
 
   reverse_geocoded_by :latitude, :longitude do |obj, results|
-    if geo = results.first
+    if geo == results.first
       obj.address = geo.address.split(',')[0]
       obj.city = geo.city
       obj.zip = geo.postal_code
       obj.state = geo.state_code
-
     end
   end
 
