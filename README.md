@@ -27,7 +27,8 @@ Application for displaying, analyzing and retrieving spatial time series data.
       e. data_provider: string - Source of Data
 
 3. Data import is most easily accomplished by constructing a SQL insert. An example insert file is provided.  
-4. If you lack specific coordinates, they can be geocoded from the addresses. Simply run `Site.geocode_all` after loading your sites with address data. 
+
+4. If you lack specific coordinates, they can be geocoded from the addresses. Simply run `Site.geocode_all` after loading your sites with address data.
 
 ### Usage Instructions
 1. Select sites using the map in the top left panel. You can click a site or hold shift and drag to select an area. To deselect, click a site again or hold shift-cmd/ctrl while dragging to deselect an area.

@@ -2,7 +2,6 @@
 
 class Site < ActiveRecord::Base
   has_many :measurements
-  attr_accessor :measurements_cache
 
   reverse_geocoded_by :latitude, :longitude do |obj, results|
     if geo == results.first
@@ -34,5 +33,5 @@ class Site < ActiveRecord::Base
     p "#{count} sites have been successfully geocoded."
   end
 
-  # after_validation :reverse_geocode  # auto-fetch address
+  after_validation :reverse_geocode # auto-fetch address
 end
