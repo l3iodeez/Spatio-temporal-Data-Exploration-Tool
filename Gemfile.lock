@@ -239,7 +239,6 @@ GEM
     slop (3.6.0)
     spreadsheet (1.1.4)
       ruby-ole (>= 1.0)
-    spring (1.6.4)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -314,7 +313,6 @@ DEPENDENCIES
   rubocop
   sass-rails
   sdoc (~> 0.4.0)
-  spring
   statsample
   statsample-timeseries
   turbolinks
@@ -326,4 +324,4 @@ RUBY VERSION
    ruby 2.4.4p296
 
 BUNDLED WITH
-   1.16.2
+   1.17.1
