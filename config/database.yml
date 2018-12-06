@@ -9,11 +9,12 @@ default: &default
   pool: 5
   timeout: 5000
   database: water_data
+  host: localhost
+  username: water_data
+  password: water_data
 
 development:
-  adapter: postgresql
-  pool: 5
-  timeout: 5000
+  <<: *default
   database: water_data
 
 # Warning: The database defined as "test" will be erased and

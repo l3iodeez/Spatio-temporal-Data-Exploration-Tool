@@ -7,6 +7,6 @@ class RemoveExtraneousFields < ActiveRecord::Migration
     remove_column :sites, :end
     remove_column :sites, :full_json
     remove_column :measurements, :full_json
-    remove_column :site_name, :full_json
+    remove_column :sites, :full_json
   end
 end
