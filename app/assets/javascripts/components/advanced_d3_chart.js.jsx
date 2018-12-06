@@ -88,7 +88,7 @@ var AdvancedD3Chart = React.createClass({
     return ticks[1] - ticks[0];
   },
 
-  drawChart: function () {
+  drawChart: function (filterExtents) {
     if (!this.state.series) {
       return;
     }
@@ -161,19 +161,24 @@ var AdvancedD3Chart = React.createClass({
         .attr('width', sizes.width)
         .attr('height', sizes.height);
 
-    xScale.domain([this.findMinX(), this.findMaxX()]);
+    if (filterExtents) {
+      xScale.domain(filterExtents);
+      xScale2.domain(filterExtents);
+    } else {
+      xScale.domain([this.findMinX(), this.findMaxX()]);
+      var domain = xScale2.domain();
+      if (domain[1] - domain[0] <= 1) {
+        xScale2.domain(xScale.domain());
+      }
+    }
 
     yScale.domain([this.findMinY(), this.findMaxY()]);
 
-    xScale2.domain(xScale.domain());
 
     // export d3 objects to state
-
-    var extents = xScale.domain();
-
     this.setState({
-      filterStart: new Date(Math.min.apply(null, extents)),
-      filterEnd: new Date(Math.max.apply(null, extents)),
+      filterStart: new Date(Math.min.apply(null,  xScale.domain())),
+      filterEnd: new Date(Math.max.apply(null,  xScale.domain())),
       xAxis: xAxis,
       yAxis: yAxis,
       svg: svg,
@@ -185,9 +190,9 @@ var AdvancedD3Chart = React.createClass({
 
     var brush = d3.svg.brush()//for slider bar at the bottom
        .x(xScale2)
-       .on('brush', brushed.bind(this)());
+       .on('brush', redrawDataLines(this));
 
-    function brushed() {
+    function redrawDataLines(context) {
       return (function () {
         xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
         var extents = brush.extent();
@@ -224,7 +229,7 @@ var AdvancedD3Chart = React.createClass({
 
         this.drawAveragedTrendline(svg, xScale, yScale); //redraw trendline
 
-      }.bind(this));
+      }.bind(context));
     }
 
     context.append('g') // Create brushing xAxis
@@ -809,6 +814,32 @@ var AdvancedD3Chart = React.createClass({
     });
   },
 
+  updateStartDate: function (e) {
+    var startDate = new Date(e.target.value)
+    this.setState({ filterStart: startDate }, function () {
+      this.drawChart([startDate, this.state.filterEnd]);
+    });
+  },
+
+  updateEndDate: function (e) {
+    var endDate = new Date(e.target.value)
+    this.setState({ filterEnd: endDate  }, function () {
+      this.drawChart([this.state.filterStart, endDate]);
+    });
+  },
+
+  filterStart: function (e) {
+    if (this.state.filterStart) {
+      return this.state.filterStart.toISOString().substring(0, 10)
+    }
+  },
+
+  filterEnd: function (e) {
+    if (this.state.filterEnd) {
+      return this.state.filterEnd.toISOString().substring(0, 10)
+    }
+  },
+
   render: function () {
     return (
       <div id={'adv-d3-container' + this.props.className.split(' ').join('')} className='graph'>
@@ -824,9 +855,11 @@ var AdvancedD3Chart = React.createClass({
          onClick={this.saveDisplayed}>
          Save Displayed as:
        </button>
-       <input type='text' onChange={this.updateNameEntry} value={this.state.nameEntry} />
        { this.state.series ? (
          <div>
+           <input type='text' onChange={this.updateNameEntry} value={this.state.nameEntry} />
+           <input type='date' onChange={this.updateStartDate} value={this.filterStart()} />
+           <input type='date' onChange={this.updateEndDate} value={this.filterEnd()} />
            <select
              value={this.state.timeResolution}
              onChange={this.updateTimeResolution}
