@@ -162,75 +162,29 @@ var AdvancedD3Chart = React.createClass({
         .attr('height', sizes.height);
 
     if (filterExtents) {
-      xScale.domain(filterExtents);
-      xScale2.domain(filterExtents);
+      var startDate =  new Date(Math.min.apply(null,  filterExtents))
+      var endDate =  new Date(Math.max.apply(null,  filterExtents))
     } else {
-      xScale.domain([this.findMinX(), this.findMaxX()]);
-      var domain = xScale2.domain();
-      if (domain[1] - domain[0] <= 1) {
-        xScale2.domain(xScale.domain());
-      }
+      var startDate = this.findMinX()
+      var endDate = this.findMaxX()
+    }
+
+    xScale.domain([startDate, endDate]);
+    var domain = xScale2.domain();
+    if (domain[1] - domain[0] <= 1) {
+      xScale2.domain(xScale.domain());
     }
 
     yScale.domain([this.findMinY(), this.findMaxY()]);
 
 
-    // export d3 objects to state
-    this.setState({
-      filterStart: new Date(Math.min.apply(null,  xScale.domain())),
-      filterEnd: new Date(Math.max.apply(null,  xScale.domain())),
-      xAxis: xAxis,
-      yAxis: yAxis,
-      svg: svg,
-      xScale: xScale,
-      yScale: yScale,
-    });
 
     //for slider part
 
-    var brush = d3.svg.brush()//for slider bar at the bottom
-       .x(xScale2)
-       .on('brush', redrawDataLines(this));
-
-    function redrawDataLines(context) {
-      return (function () {
-        xScale.domain(brush.empty() ? xScale2.domain() : brush.extent());
-        var extents = brush.extent();
-        this.setState({
-          filterStart: new Date(Math.min.apply(null, extents)),
-          filterEnd: new Date(Math.max.apply(null, extents)),
-        });
-
-        // If brush is empty then reset the Xscale domain to default,
-        // if not then make it the brush extent
-
-        svg.select('.x.axis') // replot xAxis with transition when brush used
-              .transition()
-              .call(xAxis);
-
-        maxY = this.findMaxY();
-
-        // Find max Y rating value categories data with 'visible'; true
-        yScale.domain([0, maxY]);
-
-        // Redefine yAxis domain based on highest y value of categories data with 'visible'; true
-
-        svg.select('.y.axis') // Redraw yAxis
-          .transition()
-          .call(yAxis);
-
-        issue.select('path') // Redraw lines based on brush xAxis scale and domain
-          .transition()
-          .attr('d', function (d) {
-              return d.visible ? line(d.values) : null;
-
-              // If d.visible is true then draw line for this d selection
-            });
-
-        this.drawAveragedTrendline(svg, xScale, yScale); //redraw trendline
-
-      }.bind(context));
-    }
+    var brush = d3.svg.brush()
+        //for slider bar at the bottom
+       brush.x(xScale2)
+       .on('brush', this.redrawDataLines);
 
     context.append('g') // Create brushing xAxis
         .attr('class', 'x axis1')
@@ -250,8 +204,8 @@ var AdvancedD3Chart = React.createClass({
     context.append('path') // Path is created using svg.area details
       .attr('class', 'area')
       .attr('d', contextArea([
-        { measureDate: this.findMinX(), siteId: 0, level: 0 },
-        { measureDate: this.findMaxX(), siteId: 0, level: 0 },
+        { measureDate: startDate, siteId: 0, level: 0 },
+        { measureDate: endDate, siteId: 0, level: 0 },
       ]))
       .attr('fill', '#F1F1F2');
 
@@ -282,12 +236,12 @@ var AdvancedD3Chart = React.createClass({
         .text(DP.dataPortal.measurementName);
     var legend = svg.append('g')
        .attr('class', 'legend-container');
-    var issue = legend.selectAll('.issue')
+    var dataLine = legend.selectAll('.dataLine')
         .data(this.state.series) // Select nested data and append to new svg group elements
       .enter().append('g')
-        .attr('class', 'issue');
+        .attr('class', 'dataLine');
 
-    issue.append('path')
+    dataLine.append('path')
         .attr('class', 'line')
         .style('pointer-events', 'none') // Stop line interferring with cursor
         .attr('id', function (d) {
@@ -295,7 +249,7 @@ var AdvancedD3Chart = React.createClass({
           return 'line-' +
           uniqueId + '-' + d.name.replace(new RegExp('\\.|\\\\|\/\|\\s|\\/', 'g'), '');
 
-          // Give line id of line-(insert issue name, with any spaces replaced with no spaces)
+          // Give line id of line-(insert dataLine name, with any spaces replaced with no spaces)
         }.bind(this))
         .attr('d', function (d) {
           return d.visible ? line(d.values) : null;
@@ -307,8 +261,8 @@ var AdvancedD3Chart = React.createClass({
 
     var legendSpace = Math.min(Math.max(350 / this.state.series.length, 5), 25);
 
-    // 450/number of issues (ex. 40)
-    issue.append('rect')
+    // 450/number of dataLines (ex. 40)
+    dataLine.append('rect')
         .attr('width', 10)
         .attr('height', 10)
         .attr('x', sizes.width + (sizes.margin.right / 3) - 15)
@@ -336,14 +290,14 @@ var AdvancedD3Chart = React.createClass({
             .call(yAxis);
 
           // Redefine yAxis domain based on highest y value of categories data with "visible"; true
-          issue.select('path')
+          dataLine.select('path')
             .transition()
             .attr('d', function (d) {
               return d.visible ? line(d.values) : null;
             });
 
           // If d.visible is true then draw line for this d selection
-          issue.select('rect')
+          dataLine.select('rect')
             .transition()
             .attr('fill', function (d) {
             return d.visible ? color(d.name) : '#F1F1F2';
@@ -377,7 +331,7 @@ var AdvancedD3Chart = React.createClass({
             .style('stroke-width', 1.5);
         });
 
-    issue.append('text')
+    dataLine.append('text')
         .attr('x', sizes.width + (sizes.margin.right / 3))
         .attr('y', function (d, i) { return (legendSpace) + i * (legendSpace); })
 
@@ -408,6 +362,22 @@ var AdvancedD3Chart = React.createClass({
                     .slice(1); //remove the first column name (`date`);
     // Draw overall trendline
     this.drawAveragedTrendline(svg, xScale, yScale);
+    // export d3 objects to state
+    this.setState({
+      filterStart: new Date(Math.min.apply(null,  xScale.domain())),
+      filterEnd: new Date(Math.max.apply(null,  xScale.domain())),
+      xAxis: xAxis,
+      xAxis2: xAxis2,
+      yAxis: yAxis,
+      svg: svg,
+      xScale: xScale,
+      xScale2: xScale2,
+      yScale: yScale,
+      brush: brush,
+      dataLine: dataLine,
+      line: line
+    });
+
 
     function mousemove() {
       var mouseX = d3.mouse(event.target)[0]; // Finding mouse x position on rect
@@ -472,7 +442,7 @@ var AdvancedD3Chart = React.createClass({
       });
     }
 
-    var focus = issue.select('g') // create group elements to house tooltip text
+    var focus = dataLine.select('g') // create group elements to house tooltip text
         .data(columnNames) // bind each column name date to each g element
       .enter().append('g') //create one <g> for each columnName
         .attr('class', 'focus');
@@ -492,6 +462,45 @@ var AdvancedD3Chart = React.createClass({
         d3.select('#hover-line')
             .style('opacity', 1e-6); // On mouse out making line invisible
       });
+
+
+  },
+
+  redrawDataLines: function () {
+    this.state.xScale.domain(this.state.brush.empty() ? this.state.xScale2.domain() : this.state.brush.extent());
+    var extents = this.state.brush.extent();
+    this.setState({
+      filterStart: new Date(Math.min.apply(null, extents)),
+      filterEnd: new Date(Math.max.apply(null, extents)),
+    });
+
+    // If brush is empty then reset the Xscale domain to default,
+    // if not then make it the brush extent
+
+    this.state.svg.select('.x.axis') // replot xAxis with transition when brush used
+          .transition()
+          .call(this.state.xAxis);
+
+    var maxY = this.findMaxY();
+
+    // Find max Y rating value categories data with 'visible'; true
+    this.state.yScale.domain([0, maxY]);
+
+    // Redefine yAxis domain based on highest y value of categories data with 'visible'; true
+
+    this.state.svg.select('.y.axis') // Redraw yAxis
+      .transition()
+      .call(this.state.yAxis);
+
+    this.state.dataLine.select('path') // Redraw lines based on brush xAxis scale and domain
+      .transition()
+      .attr('d', function (d) {
+          return d.visible ? this.state.line(d.values) : null;
+
+          // If d.visible is true then draw line for this d selection
+        }.bind(this));
+
+    this.drawAveragedTrendline(this.state.svg, this.state.xScale, this.state.yScale); //redraw trendline
   },
 
   requestData: function (e) {
@@ -638,13 +647,17 @@ var AdvancedD3Chart = React.createClass({
       return;
     }
 
-    var averagedLine = trendlines.filter(function (line) {
-      return !isNaN(line[0]);
-    }).reduce(function (a, b) {
-      return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-    }).map(function (value) {
-      return value / trendlines.length;
-    });
+    try {
+      var averagedLine = trendlines.filter(function (line) {
+        return !isNaN(line[0]);
+      }).reduce(function (a, b) {
+        return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+      }).map(function (value) {
+        return value / trendlines.length;
+      });
+    } catch (e) {
+      return;
+    }
 
     if (isNaN(averagedLine[0])) {
       console.log('NAN');
@@ -763,7 +776,9 @@ var AdvancedD3Chart = React.createClass({
 
   leastSquares: function (xSeries, ySeries) {
     var reduceSumFunc = function (prev, cur) { return prev + cur; };
-
+    if (xSeries.length < 1) {
+      return [];
+    }
     var xBar = xSeries.reduce(reduceSumFunc) * 1.0 / xSeries.length;
     var yBar = ySeries.reduce(reduceSumFunc) * 1.0 / ySeries.length;
 
@@ -840,6 +855,44 @@ var AdvancedD3Chart = React.createClass({
     }
   },
 
+  currentSiteIds: function () {
+    return this.state.series.filter(function (s) {
+      if (s.visible) {
+        return s;
+      }
+    }).map(function (s) { return s.id; })
+  },
+
+  reloadData: function (e) {
+    SiteDataStore.loadSeries(this.currentSiteIds(), this.loadData);
+  },
+
+  submitViaForm: function(url, params) {
+    var f = $("<form target='_blank' method='POST' style='display:none;'></form>").attr({
+        action: url
+    }).appendTo(document.body);
+
+    for (var i in params) {
+        if (params.hasOwnProperty(i)) {
+            $('<input type="hidden" />').attr({
+                name: i,
+                value: params[i]
+            }).appendTo(f);
+        }
+    }
+
+    f.submit();
+    f.remove();
+  },
+
+  downloadData: function (e) {
+    params = {
+      pullIds: this.currentSiteIds(),
+      filterDates: [this.filterStart(), this.filterEnd()]
+    }
+    this.submitViaForm(`/api/csv_download`, params);
+  },
+
   render: function () {
     return (
       <div id={'adv-d3-container' + this.props.className.split(' ').join('')} className='graph'>
@@ -850,6 +903,8 @@ var AdvancedD3Chart = React.createClass({
           height='100%'
          />
        <button onClick={this.requestData}>Load From Map</button>
+       <button onClick={this.reloadData}>Reload Current Selection</button>
+       <button onClick={this.downloadData}>Download Current Selection</button>
        <button
          disabled={!this.state.series}
          onClick={this.saveDisplayed}>

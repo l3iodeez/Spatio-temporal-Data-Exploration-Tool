@@ -12,15 +12,11 @@ Rails.application.routes.draw do
     get 'series_csv/:id/' => 'sites#series_csv'
     get 'saved_selections' => 'saved_selections#ajax_get_all'
     post 'save_selections' => 'saved_selections#ajax_create'
-  end
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+    post 'csv_download' => 'sites#csv_download'
 
-  # You can have the root of your site routed with "root"
+  end
   root 'static_pages#root'
   get 'd3test' => 'static_pages#advanced_d3_test'
-  get 'trendline' => 'static_pages#trendline_test'
 
   get 'data.tsv' => 'static_pages#data'
-  get 'usd_euro.csv' => 'static_pages#usd_euro'
 end
