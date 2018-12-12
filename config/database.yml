@@ -8,22 +8,22 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
-  database: water_data
+  database: time_portal
   host: localhost
-  username: water_data
-  password: water_data
+  username: time_portal
+  password: time_portal
 
 development:
   <<: *default
-  database: water_data
+  database: time_portal
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: water_data_test
+  database: time_portal_test
 
 production:
   <<: *default
-  database: water_data
+  database: time_portal
