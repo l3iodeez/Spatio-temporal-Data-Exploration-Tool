@@ -24,19 +24,17 @@ class Api::SitesController < ApplicationController
 
   def csv_download
     get_measurments
-    if @measurements.present?
-      data = @measurements.map(&:attributes)
-      csv = data.map do |d|
-        d.values.join(',')
-      end
-      csv.unshift(data.first.keys.join(','))
-      csv = csv.join("\n")
-      filename = "selected_site_data_#{@start_date}_#{@end_date}.csv"
-      render csv: csv, filename: filename
-    else
-      render text: ""
-    end
+    attributes = %w{id site_id site_name measure_date level units measure_type data_provider }
+    csv = CSV.generate(headers: true) do |csv|
+      csv << attributes
 
+      @measurements.each do |measurement|
+        csv << attributes.map{ |attr| measurement.send(attr) }
+      end
+    end
+    respond_to do |format|
+      format.json { send_data csv, filename: "users-#{Date.today}.csv" }
+    end
   end
 
   def series_csv
