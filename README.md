@@ -1,6 +1,6 @@
 # Level Data Portal
 Application for displaying, analyzing and retrieving spatial time series data.
-[Live Link](https://waterlevelportal.herokuapp.com/)
+[Live Link](https://timeportal.herokuapp.com/)
 
 
 ### Data import instructions
