@@ -1,4 +1,4 @@
-# Level Data Portal
+# Spatio-temporal Dataset Exploration Tool (SDET)
 Application for displaying, analyzing and retrieving spatial time series data.
 [Live Link](https://timeportal.herokuapp.com/)
 
