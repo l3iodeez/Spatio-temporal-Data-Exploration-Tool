@@ -47,7 +47,7 @@ gem 'statsample-timeseries'
 gem 'figaro'
 
 # Use Redis cache
-# gem 'redis-rails'
+gem 'redis-rails', '~> 5.0.2'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
