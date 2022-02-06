@@ -10,8 +10,6 @@ Rails.application.configure do
 
   # Do not eager load code on boot.
   config.eager_load = false
-  config.web_console.whitelisted_ips = '192.168.1.119'
-  BetterErrors::Middleware.allow_ip! '192.168.1.119'
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
@@ -44,13 +42,13 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   # Configure Redis
-  config.cache_store = :redis_store, {
-    :expires_in => 1.hour,
-    :namespace  => 'cache',
-    :redis      => {
-      :host => 'localhost',
-      :port => 6379,
-      :db   => 0
-    }
-  }
+  # config.cache_store = :redis_store, {
+  #   :expires_in => 1.hour,
+  #   :namespace  => 'cache',
+  #   :redis      => {
+  #     :host => 'localhost',
+  #     :port => 6379,
+  #     :db   => 0
+  #   }
+  # }
 end

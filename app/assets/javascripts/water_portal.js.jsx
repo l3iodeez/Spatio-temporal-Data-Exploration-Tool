@@ -1,11 +1,7 @@
 $(document).on('ready', function () {
-  var Router = ReactRouter.Router;
-  var Route =  ReactRouter.Route;
-  var IndexRoute = ReactRouter.IndexRoute;
   var root = document.getElementById('root');
 
   var App = React.createClass({
-    mixins: [ReactRouter.History],
 
     getInitialState: function () {
       return {
@@ -77,11 +73,6 @@ $(document).on('ready', function () {
     },
 
   });
-  var router = (
-    <Router>
-      <Route path='/' component={App}>
-      </Route>
-    </Router>
-  );
-  ReactDOM.render(router, root);
+
+  ReactDOM.render(<App />, root);
 });

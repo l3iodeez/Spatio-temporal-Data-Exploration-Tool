@@ -87,4 +87,3 @@ d3Charts.LineChart.prototype._valueLine = function () {
       .x(function (d) { return x(d.measure_date); })
       .y(function (d) { return y(d.level); });
 };
-

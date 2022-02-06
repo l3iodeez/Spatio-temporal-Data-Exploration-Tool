@@ -3,7 +3,6 @@
 //= require underscore
 //= require react
 //= require react_ujs
-//= require ReactRouter.min
 //= require d3
 //= require eventemitter
 //= require flux
