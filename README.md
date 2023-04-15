@@ -1,6 +1,6 @@
 # Spatio-temporal Dataset Exploration Tool (SDET)
 Application for displaying, analyzing and retrieving spatial time series data.
-[Live Link](https://timeportal.herokuapp.com/)
+[Live Link](https://sdet.herokuapp.com/)
 
 
 ### Data import instructions
