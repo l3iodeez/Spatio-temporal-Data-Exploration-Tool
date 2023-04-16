@@ -80,13 +80,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Configure Redis
-  config.cache_store = :redis_store, {
-    :expires_in => 1.hour,
-    :namespace  => 'cache',
-    :redis      => {
-      :host => 'localhost',
-      :port => 6379,
-      :db   => 0
-    }
-  }
+  # config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
 end
