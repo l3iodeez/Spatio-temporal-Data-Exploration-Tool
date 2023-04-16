@@ -3,8 +3,8 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.6'
-ruby '2.5.7'
+gem 'rails', '6.1.7.3'
+ruby '3.2.2'
 # Use sqlite3 as the database for Active Record
 gem 'nokogiri'
 gem 'pg'
@@ -39,15 +39,10 @@ gem 'react-rails', '~> 2.3.1'
 gem 'd3-rails', '~> 3.5.11'
 # Use Chartkick charts
 gem 'chartkick'
-# Use statsample for statsample
-gem 'statsample'
-gem 'statsample-timeseries'
 
 # Use figaro to handle config vars
 gem 'figaro'
 
-# Use Redis cache
-gem 'redis-rails', '~> 5.0.2'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -62,6 +57,3 @@ gem 'puma'
 group :development, :test do
   gem 'dotenv-rails'
 end
-
-# Use heroku add ons in production
-gem 'rails_12factor', group: :production
